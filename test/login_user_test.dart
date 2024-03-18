@@ -26,4 +26,21 @@ void main() {
     // Expect user to exist
     expect(result, true);
   });
+
+  test('Login - Invalid user throws exception', () async {
+    final userImplementation = UserImplementation();
+
+    userImplementation.client = MockClient((request) async {
+      return http.Response('',
+          404); // Suppose que le serveur renvoie une réponse 404 pour un utilisateur invalide
+    });
+
+    final user = AuthUser(
+      username: "invalid_username",
+      email: "invalid@example.com",
+    );
+
+    // Call the login function
+    expect(() async => await userImplementation.login(user), throwsException);
+  });
 }
