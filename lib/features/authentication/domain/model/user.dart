@@ -1,16 +1,15 @@
 class User {
-  final int id;
+  final int? id;
   final String name;
   final String username;
   final String email;
 
   const User({
-    required this.id,
+    this.id,
     required this.name,
     required this.username,
     required this.email,
   });
-
   factory User.fromJson(Map<String, dynamic> json) {
     return switch (json) {
       {
@@ -23,5 +22,19 @@ class User {
       _ => throw const FormatException(
           'Failed to load User compatible to that Model.'),
     };
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'username': username,
+      'email': email,
+    };
+  }
+
+  @override
+  String toString() {
+    return 'User{id: $id, name: $name, username: $username, email: $email}';
   }
 }

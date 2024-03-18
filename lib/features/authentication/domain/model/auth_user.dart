@@ -11,7 +11,7 @@ class AuthUser {
     return switch (json) {
       {
         'username': String username,
-        'password': String email,
+        'email': String email,
       } =>
         AuthUser(username: username, email: email),
       _ => throw const FormatException('Problem with auth user'),

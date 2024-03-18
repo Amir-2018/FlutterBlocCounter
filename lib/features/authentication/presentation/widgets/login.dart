@@ -1,10 +1,7 @@
 import 'package:bloc_app/features/authentication/presentation/widgets/subwidgets/saveWidgetButton.dart';
 import 'package:bloc_app/features/authentication/presentation/widgets/subwidgets/textFieldWidget.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:form_validator/form_validator.dart';
-
-import '../bloc/formvalidation_bloc.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -29,16 +26,16 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      /*appBar: AppBar(
         backgroundColor: const Color(0xFF2B6353),
         foregroundColor: const Color(0xFFFFFFFF),
-      ),
+      ),*/
       body: Form(
         key: _formKey,
         child: Stack(children: [
           Container(
-              //color: const Color(0xFF2B6353),
-              ),
+            color: const Color(0xFFA7C352),
+          ),
           Column(
             children: [
               Expanded(flex: 1, child: Container()),
@@ -61,45 +58,45 @@ class _LoginState extends State<Login> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   //crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
-                      width: 54,
-                      height: 8,
-                      decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                          color: Color(0xFFD9D9D9)),
-                    ),
+                    const Image(image: AssetImage('assets/login_image.png')),
                     const SizedBox(
-                      height: 100,
-                    ),
-                    const Image(image: AssetImage('login_image.png')),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    const SizedBox(
-                      height: 20,
+                      height: 50,
                     ),
                     TextFieldWidget(
-                        validator:
-                            ValidationBuilder().email().maxLength(50).build(),
+                        validator: (value) {
+                          debugPrint('I bring the value $value');
+                          if (value == null || value.isEmpty) {
+                            return 'Champ email est vide';
+                          }
+                          if (!EmailValidator.validate(value)) {
+                            return 'Entrer un email valide';
+                          }
+                          return null;
+                        },
+                        borderInput: OutlineInputBorder(
+                          borderSide: BorderSide(),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
                         controller: emailController,
                         isTextObscure: false,
                         placeholder: 'Email',
                         iconPrefix: Icon(Icons.email_outlined),
                         colorInputField: Color(0xFFD9D9D9)),
-                    const SizedBox(
-                      height: 20,
-                    ),
                     TextFieldWidget(
                         validator: (value) {
                           debugPrint('I bring the value $value');
                           if (value == null ||
                               value.isEmpty ||
                               value.length < 8) {
-                            return 'Please enter a valid password';
+                            return 'Entrer un mot de passe valide ';
                           }
-
                           return null;
                         },
+                        //borderRadius: BorderRadius.circular(10.0),
+                        borderInput: OutlineInputBorder(
+                          borderSide: BorderSide(),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
                         controller: passwordController,
                         isTextObscure: true,
                         placeholder: 'Password',
@@ -125,20 +122,12 @@ class _LoginState extends State<Login> {
                       height: 5,
                     ),
                     SaveWidgetButon(
-                        buttonContent: 'Login',
+                        buttonContent: 'Connexion',
                         onTap: () {
                           if ((_formKey.currentState!).validate()) {
-                            const snackBar = SnackBar(content: Text('Valid'));
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackBar);
-                            // BlocProvider.of<SignupBloc>(context).add(
-                            //     CreateUserEvent(User(
-                            //         id: 100,
-                            //         name: nameController.text,
-                            //         username: usernameController.text,
-                            //         email: emailController.text)));
+                            Navigator.pushNamed(context, '/profileinfo');
                           } else {
-                            debugPrint("test");
+                            debugPrint("Not connected");
                           }
                         }),
                     const SizedBox(
@@ -154,7 +143,7 @@ class _LoginState extends State<Login> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           const Text(
-                            'Did you have an account ? ',
+                            'Créer un compte? ',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 13,
@@ -165,7 +154,7 @@ class _LoginState extends State<Login> {
                               Navigator.pushNamed(context, '/signup');
                             },
                             child: Text(
-                              'Signup',
+                              'Enregistrer',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13,
