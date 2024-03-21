@@ -12,18 +12,21 @@ class _ServicesState extends State<Services> {
   int _currentPage = 0;
 
   List<String> _imageUrls = [
-    "assets/navig.png",
+    "assets/car.jpg",
     "assets/chotrana.png",
-    "assets/navig.png",
+    "assets/news.jpg",
   ];
 
   List<Map<String, dynamic>> _services = [
-    {"icon": Icons.home, "title": "Home Services"},
-    {"icon": Icons.shopping_cart, "title": "Shopping"},
-    {"icon": Icons.restaurant, "title": "Food Delivery"},
-    {"icon": Icons.directions_car, "title": "Car Services"},
-    {"icon": Icons.hotel, "title": "Hotel Booking"},
-    {"icon": Icons.event, "title": "Event Planning"},
+    {
+      "icon": Icons.map_outlined,
+      "title": "Map",
+    },
+    {"icon": Icons.newspaper_outlined, "title": "Actualités"},
+    {"icon": Icons.local_convenience_store_rounded, "title": "Conventions"},
+    {"icon": Icons.directions_car, "title": "covoiturage"},
+    {"icon": Icons.report_outlined, "title": "Réclamations"},
+    {"icon": Icons.event, "title": "Evenements"},
   ];
 
   @override
@@ -47,9 +50,17 @@ class _ServicesState extends State<Services> {
                           });
                         },
                         children: _imageUrls.map((imageUrl) {
-                          return Image.asset(
-                            imageUrl,
-                            fit: BoxFit.cover,
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                              top: 20.0, // Espacement depuis le haut
+                              bottom: 0.0, // Espacement depuis le bas
+                              left: 10.0, // Espacement depuis la gauche
+                              right: 10.0, // Espacement depuis la droite
+                            ),
+                            child: Image.asset(
+                              imageUrl,
+                              fit: BoxFit.cover,
+                            ),
                           );
                         }).toList(),
                       ),
@@ -143,7 +154,11 @@ class _ServicesState extends State<Services> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(service["icon"], size: 40),
+          Icon(
+            service["icon"],
+            size: 40,
+            color: Color(0xff3960CA),
+          ),
           SizedBox(height: 10),
           Text(
             service["title"],
