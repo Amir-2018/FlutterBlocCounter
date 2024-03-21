@@ -1,5 +1,4 @@
 import 'package:bloc_app/features/authentication/domain/model/auth_user.dart';
-import 'package:bloc_app/features/authentication/presentation/widgets/login/bloc/login_bloc.dart';
 import 'package:bloc_app/features/authentication/presentation/widgets/subwidgets/saveWidgetButton.dart';
 import 'package:bloc_app/features/authentication/presentation/widgets/subwidgets/textFieldWidget.dart';
 import 'package:email_validator/email_validator.dart';
@@ -7,9 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../core/dependencies_injection.dart';
+import 'bloc/login_bloc.dart';
 
-class VerifyEmail extends StatelessWidget {
-  const VerifyEmail({super.key});
+class LoginWidget extends StatelessWidget {
+  const LoginWidget({super.key});
   @override
   Widget build(BuildContext context) {
     initDependencies();
@@ -32,11 +32,11 @@ class VerifyEmail extends StatelessWidget {
 class Login extends StatefulWidget {
   @override
   State<Login> createState() {
-    return _VerifyEmailState();
+    return _LoginState();
   }
 }
 
-class _VerifyEmailState extends State<Login> {
+class _LoginState extends State<Login> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
@@ -103,12 +103,12 @@ class _VerifyEmailState extends State<Login> {
                             //crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               const Image(
-                                  image: AssetImage('assets/verifyemail.png')),
+                                  image: AssetImage('assets/login_image.png')),
                               const SizedBox(
                                 height: 30,
                               ),
                               const Text(
-                                'Récupération',
+                                'Connexion',
                                 style: TextStyle(
                                     fontSize: 25,
                                     fontWeight: FontWeight.bold,
@@ -120,12 +120,12 @@ class _VerifyEmailState extends State<Login> {
                               TextFieldWidget(
                                   validator: (value) {
                                     debugPrint('I bring the value $value');
-                                    if (value == null || value.isEmpty) {
-                                      return 'Champ email est vide';
+                                    if (value == null ||
+                                        value.isEmpty ||
+                                        value.length < 3) {
+                                      return "Nom d'utilisateur est invalide";
                                     }
-                                    if (!EmailValidator.validate(value)) {
-                                      return 'Entrer un email valide';
-                                    }
+
                                     return null;
                                   },
                                   borderInput: OutlineInputBorder(
@@ -133,18 +133,61 @@ class _VerifyEmailState extends State<Login> {
                                   ),
                                   controller: usernameController,
                                   isTextObscure: false,
-                                  placeholder: "Email",
+                                  placeholder: "Nom d'utilisateur",
                                   iconPrefix: const Icon(Icons.email_outlined),
                                   colorInputField: const Color(0xFFD9D9D9)),
+                              TextFieldWidget(
+                                  validator: (value) {
+                                    debugPrint('I bring the value $value');
+                                    if (value == null || value.isEmpty) {
+                                      return 'Entrer un mot de passe valide ';
+                                    }
+                                    return null;
+                                  },
+                                  //borderRadius: BorderRadius.circular(10.0),
+                                  borderInput: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  controller: passwordController,
+                                  isTextObscure: true,
+                                  placeholder: 'Mot de passe',
+                                  iconPrefix: const Icon(Icons.lock_outline),
+                                  colorInputField: const Color(0xFFD9D9D9)),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.pushNamed(context, '/verifyEmail');
+                                },
+                                child: const Padding(
+                                  padding: EdgeInsets.only(
+                                      right:
+                                          25), // Applying padding only to the right side
+
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      'Mot de passe oublié ?',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize:
+                                            14, // Increasing font size for better visibility
+                                        color: Colors
+                                            .blue, // Changing color to a typical link color
+                                        decoration: TextDecoration
+                                            .underline, // Adding underline to mimic a link
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                               const SizedBox(
-                                height: 10,
+                                height: 15,
                               ),
                               SaveWidgetButon(
                                 buttonContent: 'Connexion',
                                 onTap: () {
                                   if ((_formKey.currentState!).validate()) {
                                     Navigator.pushNamed(
-                                        context, '/changePassword');
+                                        context, '/profileinfo');
 
                                     /*BlocProvider.of<LoginBloc>(context).add(
                                         SubmitUserEvent(AuthUser(
@@ -152,6 +195,9 @@ class _VerifyEmailState extends State<Login> {
                                             username: usernameController.text,
                                             password:
                                                 passwordController.text)));*/
+                                  } else {
+                                    debugPrint(
+                                        "Les champs ne sont pas valides");
                                   }
                                 },
                               ),
@@ -172,6 +218,36 @@ class _VerifyEmailState extends State<Login> {
                               }),
                               const SizedBox(
                                 height: 15,
+                              ),
+                              Container(
+                                //padding : EdgeInsets.symmetric(horizontal: 10.0,vertical: 0.0) ,
+                                //margin: EdgeInsets.symmetric(horizontal: 90.0,vertical: 0.0),
+
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      'Créer un compte? ',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.pushNamed(context, '/signup');
+                                      },
+                                      child: const Text(
+                                        'Enregistrer',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13,
+                                            color: Color(0xFFFEBE50)),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),

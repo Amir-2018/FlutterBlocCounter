@@ -9,19 +9,54 @@ import '../../../../core/constantes.dart';
 import '../../../../core/dependencies_injection.dart';
 import '../../domain/model/user.dart';
 import '../../domain/repository/user_repository.dart';
-// import '../datasources/local/database_helper.dart';
+import '../datasources/local/database_helper.dart';
 
-class UserImplementation extends UserRepository {
-  // final http.Client? client;
+class UserRepositoryImpl extends UserRepository {
   Client client = Client();
-  // UserImplementation(MockClient client, {this.client});
+
   @override
-  Future<String> getUser() async {
-    final response = await http.get(Uri.parse('http://localhost:3000/users/2'));
+  Future<bool> login(AuthUser authUser) async {
+    try {
+      final response = await http.post(
+        Uri.parse(
+            'http://172.19.0.55:8080/realms/SpringBootKeycloak/protocol/openid-connect/token'),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        encoding: Encoding.getByName('utf-8'),
+        //encoding: Encoding.getByName('utf-8'),
+        body: {
+          'client_id': 'login-app',
+          'username': authUser.username,
+          'password': authUser.password,
+          'grant_type': 'password'
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // User with the provided username and email exists
+        return true;
+      } else if (response.statusCode == 404) {
+        debugPrint("User not found");
+        // User with the provided username and email doesn't exist
+        return false;
+      } else {
+        debugPrint(response.statusCode.toString());
+        // Failed to check user existence
+        throw Exception('Failed to check user existence.');
+      }
+    } catch (e) {
+      // Handle any network or server errors
+      throw Exception('Failed to check user existence: $e');
+    }
+  }
+
+  Future<User> getUser() async {
+    final response = await http.get(Uri.parse('$Linkusers/2'));
     if (response.statusCode == 200) {
       User user =
           User.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
-      return user.email.toString();
+      return user;
     } else {
       throw Exception('Failed to load user');
     }
@@ -30,23 +65,34 @@ class UserImplementation extends UserRepository {
   @override
   Future<User> createUser(User user) async {
     final response = await http.post(
-      Uri.parse('http://localhost:3000/users/'),
+      Uri.parse('http://172.19.0.55:8081/user'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, dynamic>{
         //'id': 100,
-        'name': user.name,
         'username': user.username,
-        'email': user.email
+        'password': user.password,
+        'email': user.email,
+        'telephone': user.telephone,
+        'establishment': user.establishment,
+        'post': user.post,
+        'cin': user.cin
       }),
     );
     if (response.statusCode == 201) {
-      final User user =
-          User.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
-      return user;
+      // debugPrint('inserted user with success') ;
+      try {
+        initDependencies();
+        getIt<DatabaseHelper>().initializeDatabase();
+        //getIt<DatabaseHelper>().insertUser(user.toMap());
+        getIt<DatabaseHelper>().getUsers();
+      } catch (err) {
+        debugPrint('There is some error here $err');
+      }
+      return User.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
     } else {
-      // debugPrint('The error code is ${response.statusCode.toString());
+      debugPrint(response.statusCode.toString());
       throw Exception('Failed to create User. ');
     }
   }
@@ -84,36 +130,5 @@ class UserImplementation extends UserRepository {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );*/
     debugPrint('ajoutée avec succées');
-  }
-
-  @override
-  Future<bool> login(AuthUser user) async {
-    try {
-      final response = await http.post(
-        Uri.parse(
-            'http://localhost:3000/users/check-existence'), // Assuming there's an endpoint for checking existence
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, String>{
-          'username': user.username,
-          'email': user.email,
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        // User with the provided username and email exists
-        return true;
-      } else if (response.statusCode == 404) {
-        // User with the provided username and email doesn't exist
-        return false;
-      } else {
-        // Failed to check user existence
-        throw Exception('Failed to check user existence.');
-      }
-    } catch (e) {
-      // Handle any network or server errors
-      throw Exception('Failed to check user existence: $e');
-    }
   }
 }

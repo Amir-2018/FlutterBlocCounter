@@ -16,10 +16,11 @@ class SaveWidgetButon extends StatelessWidget {
           style: ElevatedButton.styleFrom(
               // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
               elevation: 2.0,
-              backgroundColor: const Color(0xFFA7C352)),
+              backgroundColor: const Color(0xFF1F7774)),
           child: Text(
             buttonContent.toString(),
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+                color: Colors.white, fontWeight: FontWeight.bold),
           )),
     );
   }

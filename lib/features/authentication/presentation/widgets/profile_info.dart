@@ -25,7 +25,7 @@ class ProfileInfo extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
 
-                  Text(
+                  const Text(
                       textAlign: TextAlign.center,
                       "I am jhon doe and i am software engineerat Actia Engineering Services",
                       style: TextStyle(
@@ -101,10 +101,13 @@ class ProfileInfo extends StatelessWidget {
                         onPressed: () {},
                         heroTag: 'follow',
                         elevation: 0,
-                        backgroundColor: const Color(0xff3BC4BF),
+                        backgroundColor: const Color(0xFF1F7774),
                         label: const Text(
                           "Manage Events",
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 16.0),
@@ -112,8 +115,14 @@ class ProfileInfo extends StatelessWidget {
                         onPressed: () {},
                         heroTag: 'Verify',
                         elevation: 0,
-                        backgroundColor: const Color(0xffF5F0E3),
-                        label: const Text("Verify"),
+                        backgroundColor: const Color(0xff607274),
+                        label: const Text(
+                          "Verify",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -143,7 +152,7 @@ class _TopPortion extends StatelessWidget {
               gradient: LinearGradient(
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
-                  colors: [Color(0xffA7C352), Color(0xffA7C352)]),
+                  colors: [Color(0xFF1F7774), Color(0xFF1F7774)]),
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(50),
                 bottomRight: Radius.circular(50),
@@ -175,7 +184,7 @@ class _TopPortion extends StatelessWidget {
                     child: Container(
                       margin: const EdgeInsets.all(8.0),
                       decoration: const BoxDecoration(
-                          color: Colors.green, shape: BoxShape.circle),
+                          color: Color(0xff5D805E), shape: BoxShape.circle),
                     ),
                   ),
                 ),
@@ -189,7 +198,7 @@ class _TopPortion extends StatelessWidget {
             margin: EdgeInsets.only(top: 10, right: 15),
             decoration: BoxDecoration(
               border: Border.all(color: Color(0xffF5F0E3), width: 2),
-              color: Color(0xffA7C352),
+              color: Color(0xFF1F7774),
               shape: BoxShape.circle,
             ),
             //padding: EdgeInsets.only(right: 20,top :50),

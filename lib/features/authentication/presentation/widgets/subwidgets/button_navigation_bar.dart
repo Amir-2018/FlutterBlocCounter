@@ -12,19 +12,17 @@ class _SimpleBottomNavigationState extends State<ButtonNavigationBar> {
   BottomNavigationBarType _bottomNavType = BottomNavigationBarType.fixed;
   @override
   Widget build(BuildContext context) {
-    return
-     BottomNavigationBar(
-          currentIndex: _selectedIndex,
-          selectedItemColor: const Color(0xffA7C352),
-          unselectedItemColor: const Color(0xff757575),
-          type: _bottomNavType,
-          onTap: (index) {
-            setState(() {
-              _selectedIndex = index;
-            });
-          },
-          items: _navBarItems);
-
+    return BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        selectedItemColor: const Color(0xFF1F7774),
+        unselectedItemColor: const Color(0xff757575),
+        type: _bottomNavType,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        items: _navBarItems);
   }
 }
 
@@ -44,5 +42,4 @@ const _navBarItems = [
     activeIcon: Icon(Icons.notifications),
     label: 'Notifications',
   ),
-
 ];

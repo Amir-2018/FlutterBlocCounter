@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-
+import 'package:path/path.dart';
 class SqliteService {
+
   Future<Database> initializeDB() async {
     // gets the default database location.
     WidgetsFlutterBinding.ensureInitialized();
@@ -13,10 +13,11 @@ class SqliteService {
       // onCreate() callback: It will be called when the database is created for the first time,
       onCreate: (database, version) async {
         await database.execute(
-          'CREATE TABLE users(id INTEGER PRIMARY KEY, name TEXT, username TEXT, email TEXT)',
+            'CREATE TABLE users(id INTEGER PRIMARY KEY, name TEXT, username TEXT, email TEXT)',
         );
       },
       version: 1,
     );
   }
+
 }

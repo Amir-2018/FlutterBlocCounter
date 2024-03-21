@@ -1,11 +1,11 @@
 //import 'dart:html';
 
 import 'package:flutter/cupertino.dart';
-import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import '../../../domain/model/user.dart';
-
 class DatabaseHelper {
   Database? _database;
   Future<void> initializeDatabase() async {
@@ -24,14 +24,14 @@ class DatabaseHelper {
           await db.execute(
               'CREATE TABLE Users (id INTEGER PRIMARY KEY, name TEXT, username TEXT, email TEXT)');
         },
+
       );
       debugPrint(' this is the databae${_database.toString()}');
     } else {
       debugPrint('The database is already existed');
     }
   }
-
-  Future<void> insertUser(Map<String, dynamic> row) async {
+  Future<void> insertUser(Map<String, dynamic>row) async {
     if (_database == null) {
       debugPrint('the database is null');
     } else {
@@ -49,6 +49,7 @@ class DatabaseHelper {
 
   Future<void> getUsers() async {
     List<Map> list = await _database!.rawQuery('SELECT * FROM Users');
-    debugPrint("your list is $list");
+    debugPrint("your list is $list") ;
   }
 }
+

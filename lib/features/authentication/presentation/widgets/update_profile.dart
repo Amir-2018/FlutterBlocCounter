@@ -12,21 +12,24 @@ class UpdteProfile extends StatefulWidget {
 }
 
 class _UpdteProfileState extends State<UpdteProfile> {
-  final inputController1 = TextEditingController();
-  final inputController2 = TextEditingController();
-  final inputController3 = TextEditingController();
-  final inputController4 = TextEditingController();
-  final inputController5 = TextEditingController();
-  final inputController6 = TextEditingController();
+  final fullNameController = TextEditingController(text: 'Richie Lorie');
+  final descriptionController =
+      TextEditingController(text: 'I am jhon and i am software ingeneer');
+  final addressController =
+      TextEditingController(text: 'Sfax sakiet ezzit 2024');
+  final emailController =
+      TextEditingController(text: 'Jhon.Doe@actia-engineering.tn');
+  final telephoneController = TextEditingController(text: '+216 412 325 698');
+  final posteController = TextEditingController(text: 'Technical lead');
 
   @override
   void dispose() {
-    inputController1.dispose();
-    inputController2.dispose();
-    inputController3.dispose();
-    inputController4.dispose();
-    inputController5.dispose();
-    inputController6.dispose();
+    fullNameController.dispose();
+    descriptionController.dispose();
+    emailController.dispose();
+    addressController.dispose();
+    telephoneController.dispose();
+    posteController.dispose();
     super.dispose();
   }
 
@@ -54,7 +57,7 @@ class _UpdteProfileState extends State<UpdteProfile> {
                         borderSide: const BorderSide(color: Colors.grey),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      controller: inputController1,
+                      controller: fullNameController,
                       iconPrefix: Icon(
                         Icons.person_outline,
                         color: Color(0xff414141),
@@ -77,7 +80,7 @@ class _UpdteProfileState extends State<UpdteProfile> {
                         iconPrefix:
                             Icon(Icons.edit_outlined, color: Color(0xff414141)),
                         keyboardtype: TextInputType.multiline,
-                        controller: inputController2,
+                        controller: descriptionController,
                         isTextObscure: false,
                         //validator: (String? ) {  },
                         colorInputField: const Color(0xffffffff)),
@@ -94,7 +97,7 @@ class _UpdteProfileState extends State<UpdteProfile> {
                         iconPrefix: Icon(Icons.power_settings_new_rounded,
                             color: Color(0xff414141)),
                         keyboardtype: TextInputType.multiline,
-                        controller: inputController3,
+                        controller: emailController,
                         isTextObscure: false,
                         //validator: (String? ) {  },
                         colorInputField: const Color(0xffffffff)),
@@ -111,7 +114,7 @@ class _UpdteProfileState extends State<UpdteProfile> {
                         iconPrefix: Icon(Icons.email_outlined,
                             color: Color(0xff414141)),
                         keyboardtype: TextInputType.multiline,
-                        controller: inputController4,
+                        controller: addressController,
                         isTextObscure: false,
                         //validator: (String? ) {  },
                         colorInputField: const Color(0xffffffff)),
@@ -127,7 +130,7 @@ class _UpdteProfileState extends State<UpdteProfile> {
                         ),
                         iconPrefix: Icon(Icons.phone, color: Color(0xff414141)),
                         keyboardtype: TextInputType.multiline,
-                        controller: inputController5,
+                        controller: telephoneController,
                         isTextObscure: false,
                         //validator: (String? ) {  },
                         colorInputField: const Color(0xffffffff)),
@@ -144,7 +147,7 @@ class _UpdteProfileState extends State<UpdteProfile> {
                         iconPrefix:
                             Icon(Icons.work_outline, color: Color(0xff414141)),
                         keyboardtype: TextInputType.multiline,
-                        controller: inputController6,
+                        controller: emailController,
                         isTextObscure: false,
                         //validator: (String? ) {  },
                         colorInputField: const Color(0xffffffff)),
@@ -157,9 +160,15 @@ class _UpdteProfileState extends State<UpdteProfile> {
                             onPressed: () {},
                             heroTag: 'follow',
                             elevation: 0,
-                            backgroundColor: const Color(0xff3BC4BF),
+                            backgroundColor: const Color(0xFF1F7774),
                             foregroundColor: const Color(0xffffffff),
-                            label: const Text("Enregistrer"),
+                            label: const Text(
+                              "Enregistrer",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 16.0),
@@ -169,10 +178,16 @@ class _UpdteProfileState extends State<UpdteProfile> {
                             onPressed: () {},
                             heroTag: 'Verify',
                             elevation: 0,
-                            foregroundColor: const Color(0xffffffff),
-                            backgroundColor: const Color(0xffF28F8F),
-                            label: const Text("Anuuler"),
-                            //icon: const Icon(Icons.message_outlined),
+                            foregroundColor: Colors.white,
+                            backgroundColor: Colors
+                                .redAccent, // Adjusted to red for cancellation
+                            label: Text(
+                              "Annuler",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -205,7 +220,7 @@ class _TopPortion extends StatelessWidget {
               gradient: LinearGradient(
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
-                  colors: [Color(0xffA7C352), Color(0xffA7C352)]),
+                  colors: [Color(0xFF1F7774), Color(0xFF1F7774)]),
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(50),
                 bottomRight: Radius.circular(50),

@@ -1,19 +1,16 @@
 class AuthUser {
   final String username;
-  final String email;
+  final String password;
 
   const AuthUser({
     required this.username,
-    required this.email,
+    required this.password,
   });
 
   factory AuthUser.fromJson(Map<String, dynamic> json) {
     return switch (json) {
-      {
-        'username': String username,
-        'email': String email,
-      } =>
-        AuthUser(username: username, email: email),
+      {'username': String username, 'password': String password} =>
+        AuthUser(username: username, password: password),
       _ => throw const FormatException('Problem with auth user'),
     };
   }

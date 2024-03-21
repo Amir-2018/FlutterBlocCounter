@@ -1,7 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 
-import '../../domain/model/user.dart';
+import '../../../../domain/model/user.dart';
 
 
 @immutable

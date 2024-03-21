@@ -32,13 +32,23 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  test: ^1.24.3
 flutter:
-  uses-material-design: true
+  uses-material-design: true  
   assets:
     - assets/placeholder.png
     - assets/login_image.png
     - assets/signup.png
     - assets/verifyEmail.png
+    - assets/proile_picture.png
+    - assets/background.png
+    - assets/navig.png
+    - assets/chotrana.png
+
+    
+
+
+
   # fonts:
   #   - family: Schyler
   #     fonts:
