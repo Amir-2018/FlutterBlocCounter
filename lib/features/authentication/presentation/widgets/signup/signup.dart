@@ -1,3 +1,5 @@
+import 'package:bloc_app/core/connection_bar.dart';
+import 'package:bloc_app/core/connection_management.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -257,26 +259,33 @@ class _MySignupState extends State<MySignup> {
 
                               SaveWidgetButon(
                                 buttonContent: 'Enregistrer',
-                                onTap: () {
-                                  if ((_formKey.currentState!).validate()) {
-                                    //const snackBar = SnackBar(content: Text('Valid'));
-                                    //ScaffoldMessenger.of(context)
-                                    //.showSnackBar(snackBar);
-                                    BlocProvider.of<SignupBloc>(context)
-                                        .add(CreateUserEvent(User(
-                                      // id : 3,
-                                      username: usernameController.text,
-                                      password: passwordController.text,
-                                      email: emailController.text,
-                                      telephone: telephoneController.text,
-                                      establishment:
-                                          establishmentController.text,
-                                      post: postController.text,
-                                      cin: cinContrcinoller.text,
-                                    )));
+                                onTap: () async {
+                                  bool isConnected =
+                                      await checkConnection(); // Vérifier la connexion
+
+                                  if (!isConnected) {
+                                    showConnectionFailedPopup(context);
                                   } else {
-                                    debugPrint(
-                                        "Les champs ne sont pas valides");
+                                    if ((_formKey.currentState!).validate()) {
+                                      //const snackBar = SnackBar(content: Text('Valid'));
+                                      //ScaffoldMessenger.of(context)
+                                      //.showSnackBar(snackBar);
+                                      BlocProvider.of<SignupBloc>(context)
+                                          .add(CreateUserEvent(User(
+                                        // id : 3,
+                                        username: usernameController.text,
+                                        password: passwordController.text,
+                                        email: emailController.text,
+                                        telephone: telephoneController.text,
+                                        establishment:
+                                            establishmentController.text,
+                                        post: postController.text,
+                                        cin: cinContrcinoller.text,
+                                      )));
+                                    } else {
+                                      debugPrint(
+                                          "Les champs ne sont pas valides");
+                                    }
                                   }
                                 },
                               ),

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:bloc_app/core/connection_management.dart';
 import 'package:bloc_app/features/authentication/domain/model/auth_user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
@@ -32,21 +33,16 @@ class UserRepositoryImpl extends UserRepository {
           'grant_type': 'password'
         },
       );
-
       if (response.statusCode == 200) {
-        // User with the provided username and email exists
         return true;
       } else if (response.statusCode == 404) {
         debugPrint("User not found");
-        // User with the provided username and email doesn't exist
         return false;
       } else {
         debugPrint(response.statusCode.toString());
-        // Failed to check user existence
         throw Exception('Failed to check user existence.');
       }
     } catch (e) {
-      // Handle any network or server errors
       throw Exception('Failed to check user existence: $e');
     }
   }
@@ -81,11 +77,9 @@ class UserRepositoryImpl extends UserRepository {
       }),
     );
     if (response.statusCode == 201) {
-      // debugPrint('inserted user with success') ;
       try {
         initDependencies();
         getIt<DatabaseHelper>().initializeDatabase();
-        //getIt<DatabaseHelper>().insertUser(user.toMap());
         getIt<DatabaseHelper>().getUsers();
       } catch (err) {
         debugPrint('There is some error here $err');

@@ -1,3 +1,5 @@
+import 'package:bloc_app/core/connection_bar.dart';
+import 'package:bloc_app/core/connection_management.dart';
 import 'package:bloc_app/features/authentication/domain/model/auth_user.dart';
 import 'package:bloc_app/features/authentication/presentation/widgets/subwidgets/saveWidgetButton.dart';
 import 'package:bloc_app/features/authentication/presentation/widgets/subwidgets/textFieldWidget.dart';
@@ -14,15 +16,9 @@ class LoginWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     initDependencies();
     return Scaffold(
-      /* appBar: AppBar(
-        backgroundColor: const Color(0xFFFFFFFF),
-        foregroundColor: const Color(0xFF2B6353),
-      ),*/
       body: MultiBlocProvider(providers: [
         BlocProvider<LoginBloc>(
-          create: (context) => getIt<LoginBloc>(
-              //getIt<CreateUseCase>()
-              ),
+          create: (context) => getIt<LoginBloc>(),
         ),
       ], child: Login()),
     );
@@ -42,19 +38,8 @@ class _LoginState extends State<Login> {
   final passwordController = TextEditingController();
 
   @override
-  void dispose() {
-    passwordController.dispose();
-    usernameController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext bigcontext) {
     return Scaffold(
-      /* appBar: AppBar(
-        backgroundColor: const Color(0xFF1F7774),
-        foregroundColor: const Color(0xFFFFFFFF),
-      ), */
       body: Stack(
         children: [
           Container(
@@ -144,7 +129,6 @@ class _LoginState extends State<Login> {
                                     }
                                     return null;
                                   },
-                                  //borderRadius: BorderRadius.circular(10.0),
                                   borderInput: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
@@ -184,18 +168,24 @@ class _LoginState extends State<Login> {
                               ),
                               SaveWidgetButon(
                                 buttonContent: 'Connexion',
-                                onTap: () {
-                                  if ((_formKey.currentState!).validate()) {
-                                    Navigator.pushNamed(
-                                        context, '/profileinfo');
+                                onTap: () async {
+                                  bool isConnected =
+                                      await checkConnection(); // Vérifier la connexion
 
-                                    /*BlocProvider.of<LoginBloc>(context).add(
+                                  if (!isConnected) {
+                                    showConnectionFailedPopup(bigcontext);
+                                  } else {
+                                    if ((_formKey.currentState!).validate()) {
+                                      Navigator.pushNamed(
+                                          context, '/profileinfo');
+
+                                      /*BlocProvider.of<LoginBloc>(context).add(
                                         SubmitUserEvent(AuthUser(
                                             // id : 3,
                                             username: usernameController.text,
                                             password:
                                                 passwordController.text)));*/
-                                  } else {
+                                    } else {}
                                     debugPrint(
                                         "Les champs ne sont pas valides");
                                   }
@@ -219,35 +209,30 @@ class _LoginState extends State<Login> {
                               const SizedBox(
                                 height: 15,
                               ),
-                              Container(
-                                //padding : EdgeInsets.symmetric(horizontal: 10.0,vertical: 0.0) ,
-                                //margin: EdgeInsets.symmetric(horizontal: 90.0,vertical: 0.0),
-
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    const Text(
-                                      'Créer un compte? ',
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    'Créer un compte? ',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.pushNamed(context, '/signup');
+                                    },
+                                    child: const Text(
+                                      'Enregistrer',
                                       style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 13,
-                                      ),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 13,
+                                          color: Color(0xFFFEBE50)),
                                     ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        Navigator.pushNamed(context, '/signup');
-                                      },
-                                      child: const Text(
-                                        'Enregistrer',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 13,
-                                            color: Color(0xFFFEBE50)),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
