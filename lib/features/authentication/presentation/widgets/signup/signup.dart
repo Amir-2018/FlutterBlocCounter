@@ -1,8 +1,8 @@
-import 'package:bloc_app/core/connection_bar.dart';
-import 'package:bloc_app/core/connection_management.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../core/connection_bar.dart';
+import '../../../../../core/connection_management.dart';
 import '../../../../../core/dependencies_injection.dart';
 import '../../../domain/model/user.dart';
 import '../subwidgets/saveWidgetButton.dart';

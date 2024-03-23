@@ -28,6 +28,7 @@ dependencies:
   mockito: ^5.4.4
   internet_connection_checker: ^1.0.0+1
   connectivity_plus: ^5.0.2
+  flutter_secure_storage: ^9.0.0
 
 
 dev_dependencies:

@@ -3,7 +3,7 @@ import 'package:bloc_app/features/authentication/presentation/widgets/subwidgets
 import 'package:flutter/material.dart';
 
 class UpdteProfile extends StatefulWidget {
-  UpdteProfile({super.key});
+  const UpdteProfile({super.key});
 
   @override
   State<StatefulWidget> createState() {
@@ -48,7 +48,7 @@ class _UpdteProfileState extends State<UpdteProfile> {
                 child: ListView(
                   children: [
                     TextFieldWidget(
-                      textStyle: TextStyle(color: Color(0xff414141)),
+                      textStyle: const TextStyle(color: Color(0xff414141)),
                       borderInput: OutlineInputBorder(
                         borderSide: const BorderSide(color: Colors.grey),
                         borderRadius: BorderRadius.circular(10),
@@ -58,7 +58,7 @@ class _UpdteProfileState extends State<UpdteProfile> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       controller: fullNameController,
-                      iconPrefix: Icon(
+                      iconPrefix: const Icon(
                         Icons.person_outline,
                         color: Color(0xff414141),
                       ),
@@ -68,7 +68,7 @@ class _UpdteProfileState extends State<UpdteProfile> {
                       //validator: (String? ) {  },
                     ),
                     TextFieldWidget(
-                        textStyle: TextStyle(color: Color(0xff414141)),
+                        textStyle: const TextStyle(color: Color(0xff414141)),
                         borderInput: OutlineInputBorder(
                           borderSide: const BorderSide(color: Colors.grey),
                           borderRadius: BorderRadius.circular(10),
@@ -77,15 +77,15 @@ class _UpdteProfileState extends State<UpdteProfile> {
                           borderSide: const BorderSide(color: Colors.grey),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        iconPrefix:
-                            Icon(Icons.edit_outlined, color: Color(0xff414141)),
+                        iconPrefix: const Icon(Icons.edit_outlined,
+                            color: Color(0xff414141)),
                         keyboardtype: TextInputType.multiline,
                         controller: descriptionController,
                         isTextObscure: false,
                         //validator: (String? ) {  },
                         colorInputField: const Color(0xffffffff)),
                     TextFieldWidget(
-                        textStyle: TextStyle(color: Color(0xff414141)),
+                        textStyle: const TextStyle(color: Color(0xff414141)),
                         borderInput: OutlineInputBorder(
                           borderSide: const BorderSide(color: Colors.grey),
                           borderRadius: BorderRadius.circular(10),
@@ -94,7 +94,7 @@ class _UpdteProfileState extends State<UpdteProfile> {
                           borderSide: const BorderSide(color: Colors.grey),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        iconPrefix: Icon(Icons.power_settings_new_rounded,
+                        iconPrefix: const Icon(Icons.power_settings_new_rounded,
                             color: Color(0xff414141)),
                         keyboardtype: TextInputType.multiline,
                         controller: emailController,
@@ -102,7 +102,7 @@ class _UpdteProfileState extends State<UpdteProfile> {
                         //validator: (String? ) {  },
                         colorInputField: const Color(0xffffffff)),
                     TextFieldWidget(
-                        textStyle: TextStyle(color: Color(0xff414141)),
+                        textStyle: const TextStyle(color: Color(0xff414141)),
                         borderInput: OutlineInputBorder(
                           borderSide: const BorderSide(color: Colors.grey),
                           borderRadius: BorderRadius.circular(10),
@@ -111,7 +111,7 @@ class _UpdteProfileState extends State<UpdteProfile> {
                           borderSide: const BorderSide(color: Colors.grey),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        iconPrefix: Icon(Icons.email_outlined,
+                        iconPrefix: const Icon(Icons.email_outlined,
                             color: Color(0xff414141)),
                         keyboardtype: TextInputType.multiline,
                         controller: addressController,
@@ -119,23 +119,7 @@ class _UpdteProfileState extends State<UpdteProfile> {
                         //validator: (String? ) {  },
                         colorInputField: const Color(0xffffffff)),
                     TextFieldWidget(
-                        textStyle: TextStyle(color: Color(0xff414141)),
-                        borderInput: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        borderStyle: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        iconPrefix: Icon(Icons.phone, color: Color(0xff414141)),
-                        keyboardtype: TextInputType.multiline,
-                        controller: telephoneController,
-                        isTextObscure: false,
-                        //validator: (String? ) {  },
-                        colorInputField: const Color(0xffffffff)),
-                    TextFieldWidget(
-                        textStyle: TextStyle(color: Color(0xff414141)),
+                        textStyle: const TextStyle(color: Color(0xff414141)),
                         borderInput: OutlineInputBorder(
                           borderSide: const BorderSide(color: Colors.grey),
                           borderRadius: BorderRadius.circular(10),
@@ -145,7 +129,24 @@ class _UpdteProfileState extends State<UpdteProfile> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                         iconPrefix:
-                            Icon(Icons.work_outline, color: Color(0xff414141)),
+                            const Icon(Icons.phone, color: Color(0xff414141)),
+                        keyboardtype: TextInputType.multiline,
+                        controller: telephoneController,
+                        isTextObscure: false,
+                        //validator: (String? ) {  },
+                        colorInputField: const Color(0xffffffff)),
+                    TextFieldWidget(
+                        textStyle: const TextStyle(color: Color(0xff414141)),
+                        borderInput: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        borderStyle: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        iconPrefix: const Icon(Icons.work_outline,
+                            color: Color(0xff414141)),
                         keyboardtype: TextInputType.multiline,
                         controller: emailController,
                         isTextObscure: false,
@@ -181,7 +182,7 @@ class _UpdteProfileState extends State<UpdteProfile> {
                             foregroundColor: Colors.white,
                             backgroundColor: Colors
                                 .redAccent, // Adjusted to red for cancellation
-                            label: Text(
+                            label: const Text(
                               "Annuler",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -253,7 +254,7 @@ class _TopPortion extends StatelessWidget {
                       margin: const EdgeInsets.all(8.0),
                       /*decoration: const BoxDecoration(
                           color: Colors.green, shape: BoxShape.circle),*/
-                      child: Icon(
+                      child: const Icon(
                         Icons.edit_outlined,
                       ),
                     ),

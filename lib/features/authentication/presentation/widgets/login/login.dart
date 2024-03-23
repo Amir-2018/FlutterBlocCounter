@@ -1,13 +1,13 @@
-import 'package:bloc_app/core/connection_bar.dart';
-import 'package:bloc_app/core/connection_management.dart';
-import 'package:bloc_app/features/authentication/domain/model/auth_user.dart';
-import 'package:bloc_app/features/authentication/presentation/widgets/subwidgets/saveWidgetButton.dart';
-import 'package:bloc_app/features/authentication/presentation/widgets/subwidgets/textFieldWidget.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../core/connection_bar.dart';
+import '../../../../../core/connection_management.dart';
 import '../../../../../core/dependencies_injection.dart';
+import '../../../domain/model/auth_user.dart';
+import '../subwidgets/saveWidgetButton.dart';
+import '../subwidgets/textFieldWidget.dart';
 import 'bloc/login_bloc.dart';
 
 class LoginWidget extends StatelessWidget {
@@ -179,12 +179,12 @@ class _LoginState extends State<Login> {
                                       Navigator.pushNamed(
                                           context, '/profileinfo');
 
-                                      /*BlocProvider.of<LoginBloc>(context).add(
-                                        SubmitUserEvent(AuthUser(
-                                            // id : 3,
-                                            username: usernameController.text,
-                                            password:
-                                                passwordController.text)));*/
+                                      BlocProvider.of<LoginBloc>(context).add(
+                                          SubmitUserEvent(AuthUser(
+                                              // id : 3,
+                                              username: usernameController.text,
+                                              password:
+                                                  passwordController.text)));
                                     } else {}
                                     debugPrint(
                                         "Les champs ne sont pas valides");
