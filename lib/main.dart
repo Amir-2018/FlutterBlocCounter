@@ -1,6 +1,6 @@
+import 'package:bloc_app/features/authentication/presentation/widgets/home/get_started.dart';
 import 'package:flutter/material.dart';
 import 'features/authentication/presentation/widgets/change_password/change_password.dart';
-import 'features/authentication/presentation/widgets/home/get_started.dart';
 import 'features/authentication/presentation/widgets/home/mode.dart';
 import 'features/authentication/presentation/widgets/home/services.dart';
 import 'features/authentication/presentation/widgets/login/login.dart';
@@ -23,7 +23,7 @@ void main() {
         '/signup': (context) => SignupWidget(),
         '/verifyEmail': (context) => VerifyEmail(),
         '/changePassword': (context) => const ChangePassword(),
-        /*'/verifyCode': (context) => const VerifyCode(),*/
+        //'/verifyCode': (context) => const VerifyCode(),
         '/login': (context) => const LoginWidget(),
         '/services': (context) => Services(),
         '/mode': (context) => Mode(),

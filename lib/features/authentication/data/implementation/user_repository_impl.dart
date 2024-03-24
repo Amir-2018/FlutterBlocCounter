@@ -33,11 +33,10 @@ class UserRepositoryImpl extends UserRepository {
         },
       );
       if (response.statusCode == 200) {
-        final data = json.decode(response.body) as Map<String, dynamic>;
+        /* final data = json.decode(response.body) as Map<String, dynamic>;
         String accessToken = '';
         accessToken = data['access_token'];
-        UserRepositoryImpl userImpl = UserRepositoryImpl();
-        await storage.write(key: "access_token", value: accessToken);
+        await storage.write(key: "access_token", value: accessToken);*/
         return true;
       } else if (response.statusCode == 404) {
         debugPrint("User not found");
@@ -167,8 +166,10 @@ class UserRepositoryImpl extends UserRepository {
     }
   }
 
+  @override
   Future<User> getUserInfo(String username) async {
     const User userInfo = User(
+      id: 1,
       username: 'amir',
       password: 'amir-169114',
       email: 'amir.maalaoui27@gmail.com',
@@ -177,7 +178,9 @@ class UserRepositoryImpl extends UserRepository {
       post: 'Post at ACTIA',
       cin: "'11398181",
     );
+
     return userInfo;
+
     // String? value = await storage.read(key: 'access_token');
     // debugPrint('Your token from storage $value');
     /*final response = await http.get(

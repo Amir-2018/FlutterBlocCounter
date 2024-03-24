@@ -1,12 +1,12 @@
-
+import 'package:bloc_app/features/authentication/domain/model/auth_user.dart';
+import 'package:bloc_app/features/authentication/presentation/widgets/login/bloc/login_bloc.dart';
+import 'package:bloc_app/features/authentication/presentation/widgets/subwidgets/saveWidgetButton.dart';
+import 'package:bloc_app/features/authentication/presentation/widgets/subwidgets/textFieldWidget.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../core/dependencies_injection.dart';
-import '../login/bloc/login_bloc.dart';
-import '../subwidgets/saveWidgetButton.dart';
-import '../subwidgets/textFieldWidget.dart';
+import '../../../../../../core/dependencies_injection.dart';
 
 class ChangePassword extends StatelessWidget {
   const ChangePassword({super.key});
@@ -152,7 +152,7 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
                                   ),
                                   controller: confirmPasswordController,
                                   isTextObscure: true,
-                                  placeholder: "Email",
+                                  placeholder: "Confirmer Mot de passe",
                                   iconPrefix: const Icon(Icons.lock_outline),
                                   colorInputField: const Color(0xFFD9D9D9)),
                               SaveWidgetButon(
@@ -198,6 +198,16 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
                 ),
               ),
             ),
+          ),
+          IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              size: 32,
+            ),
+            color: Colors.white,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
           ),
         ],
       ),

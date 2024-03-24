@@ -1,3 +1,4 @@
+import 'package:bloc_app/core/pop_up_messages.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -119,7 +120,7 @@ class _LoginState extends State<Login> {
                                   controller: usernameController,
                                   isTextObscure: false,
                                   placeholder: "Nom d'utilisateur",
-                                  iconPrefix: const Icon(Icons.email_outlined),
+                                  iconPrefix: const Icon(Icons.person_outlined),
                                   colorInputField: const Color(0xFFD9D9D9)),
                               TextFieldWidget(
                                   validator: (value) {
@@ -138,8 +139,18 @@ class _LoginState extends State<Login> {
                                   iconPrefix: const Icon(Icons.lock_outline),
                                   colorInputField: const Color(0xFFD9D9D9)),
                               GestureDetector(
-                                onTap: () {
-                                  Navigator.pushNamed(context, '/verifyEmail');
+                                onTap: () async {
+                                  bool isConnected =
+                                      await checkConnection(); // Vérifier la connexion
+
+                                  if (!isConnected) {
+                                    showConnectionFailedPopup(bigcontext);
+                                  } else {
+                                    //if ((_formKey.currentState!).validate()) {
+                                    Navigator.pushNamed(
+                                        context, '/verifyEmail');
+                                    // }
+                                  }
                                 },
                                 child: const Padding(
                                   padding: EdgeInsets.only(
@@ -152,12 +163,11 @@ class _LoginState extends State<Login> {
                                       'Mot de passe oublié ?',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        fontSize:
-                                            14, // Increasing font size for better visibility
-                                        color: Colors
-                                            .blue, // Changing color to a typical link color
-                                        decoration: TextDecoration
-                                            .underline, // Adding underline to mimic a link
+                                        fontSize: 14,
+                                        color: Color(
+                                            0xFF1F7774), // Changing color to a typical link color
+                                        //  : TextDecoration
+                                        //.underline,
                                       ),
                                     ),
                                   ),
@@ -185,18 +195,21 @@ class _LoginState extends State<Login> {
                                               username: usernameController.text,
                                               password:
                                                   passwordController.text)));
-                                    } else {}
-                                    debugPrint(
-                                        "Les champs ne sont pas valides");
+                                    }
                                   }
                                 },
                               ),
                               BlocBuilder<LoginBloc, LoginState>(
                                   builder: (context, state) {
                                 if (state is LoginErrorState) {
-                                  return Text(state.errormessage,
-                                      style:
-                                          const TextStyle(color: Colors.red));
+                                  showValidationCredentials(
+                                      context,
+                                      'Données erronées',
+                                      'Merci de les vérifier.',
+                                      Icons.error_outline,
+                                      const Color(0xFF1F7774),
+                                      '');
+                                  return Container();
                                 } else if (state is LoginSuccessState) {
                                   return Text(state.successMessage,
                                       style: const TextStyle(

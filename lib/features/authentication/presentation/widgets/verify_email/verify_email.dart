@@ -1,8 +1,6 @@
-
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../../../core/dependencies_injection.dart';
 import '../login/bloc/login_bloc.dart';
 import '../subwidgets/saveWidgetButton.dart';
@@ -58,6 +56,8 @@ class _VerifyEmailState extends State<Login> {
       body: Stack(
         children: [
           Container(
+// Adjust the position of the icon as needed
+
               color: const Color(0xFF1F7774),
               //.withOpacity(0.7), // Adjust color and opacity as needed
               constraints: const BoxConstraints.expand()),
@@ -182,6 +182,16 @@ class _VerifyEmailState extends State<Login> {
                 ),
               ),
             ),
+          ),
+          IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              size: 32,
+            ),
+            color: Colors.white,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
           ),
         ],
       ),

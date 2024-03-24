@@ -1,27 +1,32 @@
+import 'package:bloc_app/core/connection_bar.dart';
+import 'package:bloc_app/core/connection_management.dart';
 import 'package:bloc_app/core/dependencies_injection.dart';
 import 'package:bloc_app/features/authentication/bloc/user_bloc.dart';
+import 'package:bloc_app/features/authentication/bloc/user_event.dart';
 import 'package:bloc_app/features/authentication/bloc/user_state.dart';
 import 'package:bloc_app/features/authentication/presentation/widgets/subwidgets/button_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ProfileInfoWidget extends StatelessWidget {
-  const ProfileInfoWidget({super.key});
+class ProfileInfo extends StatelessWidget {
+  const ProfileInfo({super.key});
   @override
   Widget build(BuildContext context) {
+    // Initialize dependencies
     initDependencies();
+
     return Scaffold(
       body: MultiBlocProvider(providers: [
         BlocProvider<UserBloc>(
-          create: (context) => getIt<UserBloc>(),
+          create: (context) => getIt<UserBloc>()..add(UserInfoEventInitial()),
         ),
-      ], child: const ProfileInfo()),
+      ], child: const ProfileInfoWidget()),
     );
   }
 }
 
-class ProfileInfo extends StatelessWidget {
-  const ProfileInfo({Key? key}) : super(key: key);
+class ProfileInfoWidget extends StatelessWidget {
+  const ProfileInfoWidget({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,138 +37,166 @@ class ProfileInfo extends StatelessWidget {
             flex: 3,
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  BlocBuilder<UserBloc, UserState>(builder: (context, state) {
-                    if (state is UserFailedState) {
-                      return Column(
-                        children: [
-                          Text(
-                            state.userObject.username,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline6
-                                ?.copyWith(fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                              textAlign: TextAlign.center,
-                              state.userObject.post,
-                              style: const TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                              )),
-                          const SizedBox(height: 16),
-                          Container(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 13.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Row(
-                                  children: [
-                                    const Center(
-                                        child: Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Icon(Icons.maps_ugc_outlined),
-                                    )),
-                                    Center(
-                                      child: Text(
-                                        state.userObject.cin,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    const Center(
-                                        child: Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Icon(Icons.email_outlined),
-                                    )),
-                                    Center(
-                                      child: Text(state.userObject.password),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    const Center(
-                                        child: Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Icon(Icons.call_outlined),
-                                    )),
-                                    Center(
-                                      child: Text(
-                                        state.userObject.establishment,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    const Center(
-                                        child: Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Icon(Icons.person_2_outlined),
-                                    )),
-                                    Center(
-                                      child: Text(state.userObject.telephone),
-                                    ),
-                                  ],
-                                )
-                              ],
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    BlocBuilder<UserBloc, UserState>(builder: (context, state) {
+                      if (state is UserSuccessState) {
+                        return Column(
+                          children: [
+                            Text(
+                              state.userObject.username,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline6
+                                  ?.copyWith(fontWeight: FontWeight.bold),
                             ),
+                            const SizedBox(height: 16),
+                            Text(
+                                textAlign: TextAlign.center,
+                                state.userObject.post,
+                                style: const TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                            const SizedBox(height: 16),
+                            Container(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 13.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Center(
+                                          child: Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Icon(Icons.email_outlined),
+                                      )),
+                                      Center(
+                                        child: Text(
+                                          state.userObject.email,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      const Center(
+                                          child: Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Icon(Icons.phone_outlined),
+                                      )),
+                                      Center(
+                                        child: Text(state.userObject.telephone),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      const Center(
+                                          child: Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Icon(
+                                            Icons.business_center_outlined),
+                                      )),
+                                      Center(
+                                        child: Text(
+                                          state.userObject.establishment,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      const Center(
+                                          child: Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Icon(Icons.credit_card_outlined),
+                                      )),
+                                      Center(
+                                        child: Text(state.userObject.cin),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      const Center(
+                                          child: Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Icon(Icons.business_sharp),
+                                      )),
+                                      Center(
+                                        child: Text(
+                                            state.userObject.establishment),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      const Center(
+                                          child: Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Icon(Icons.lock_outline),
+                                      )),
+                                      Center(
+                                        child: Text(state.userObject.password),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                      } else if (state is UserFailedState) {
+                        return const Text('error message',
+                            style: TextStyle(
+                                color: Color.fromARGB(255, 77, 86, 78)));
+                      } else {
+                        return Container();
+                      }
+                    }),
+                    //Column(chi)
+
+                    const SizedBox(height: 22),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        FloatingActionButton.extended(
+                          onPressed: () {},
+                          heroTag: 'follow',
+                          elevation: 0,
+                          backgroundColor: const Color(0xFF1F7774),
+                          label: const Text(
+                            "Manage Events",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.white),
                           ),
-                        ],
-                      );
-                    } else if (state is UserSuccessState) {
-                      return const Text('error message',
-                          style: TextStyle(
-                              color: Color.fromARGB(255, 77, 86, 78)));
-                    } else {
-                      return Container();
-                    }
-                  }),
-                  //Column(chi)
-
-                  const SizedBox(height: 22),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      FloatingActionButton.extended(
-                        onPressed: () {},
-                        heroTag: 'follow',
-                        elevation: 0,
-                        backgroundColor: const Color(0xFF1F7774),
-                        label: const Text(
-                          "Manage Events",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: Colors.white),
                         ),
-                      ),
-                      const SizedBox(width: 16.0),
-                      FloatingActionButton.extended(
-                        onPressed: () {},
-                        heroTag: 'Verify',
-                        elevation: 0,
-                        backgroundColor: const Color(0xff607274),
-                        label: const Text(
-                          "Verify",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                              color: Colors.white),
+                        const SizedBox(width: 16.0),
+                        FloatingActionButton.extended(
+                          onPressed: () {},
+                          heroTag: 'Verify',
+                          elevation: 0,
+                          backgroundColor: const Color(0xff607274),
+                          label: const Text(
+                            "Verify",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: Colors.white),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  //const _ProfileInfoRow()
-                ],
+                      ],
+                    ),
+                    //const _ProfileInfoRow()
+                  ],
+                ),
               ),
             ),
           ),
@@ -244,8 +277,15 @@ class _TopPortion extends StatelessWidget {
                 Icons.edit_outlined,
                 color: Colors.white,
               ),
-              onPressed: () {
-                Navigator.pushNamed(context, '/update_profile');
+              onPressed: () async {
+                bool isConnected =
+                    await checkConnection(); // Vérifier la connexion
+
+                if (!isConnected) {
+                  showConnectionFailedPopup(context);
+                } else {
+                  Navigator.pushNamed(context, '/update_profile');
+                }
               },
             ),
           ),

@@ -1,3 +1,4 @@
+import 'package:bloc_app/core/pop_up_messages.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -65,6 +66,9 @@ class _MySignupState extends State<MySignup> {
 
   @override
   Widget build(BuildContext context) {
+    var signupBloc =
+        BlocProvider.of<SignupBloc>(context); // Capture the context here
+
     return Scaffold(
       /*appBar: AppBar(
         backgroundColor: const Color(0xFF1F7774),
@@ -101,7 +105,7 @@ class _MySignupState extends State<MySignup> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SizedBox(
+                              const SizedBox(
                                 height: 100,
                               ),
                               const Image(
@@ -109,7 +113,7 @@ class _MySignupState extends State<MySignup> {
                               const SizedBox(
                                 height: 10,
                               ),
-                              Text(
+                              const Text(
                                 'Créer votre compte',
                                 style: TextStyle(
                                     fontSize: 25,
@@ -174,7 +178,7 @@ class _MySignupState extends State<MySignup> {
                                   ),
                                   keyboardtype: TextInputType.number,
                                   controller: telephoneController,
-                                  isTextObscure: true,
+                                  isTextObscure: false,
                                   placeholder: 'Telephone',
                                   iconPrefix: const Icon(Icons.phone_outlined),
                                   colorInputField: const Color(0xFFD9D9D9)),
@@ -188,13 +192,13 @@ class _MySignupState extends State<MySignup> {
                                     return null;
                                   },
                                   borderInput: OutlineInputBorder(
-                                    borderSide: BorderSide(),
+                                    borderSide: const BorderSide(),
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                   controller: establishmentController,
                                   isTextObscure: false,
                                   placeholder: "Etablissement",
-                                  iconPrefix: const Icon(Icons.badge_outlined),
+                                  iconPrefix: const Icon(Icons.business),
                                   colorInputField: const Color(0xFFD9D9D9)),
 
                               TextFieldWidget(
@@ -206,7 +210,7 @@ class _MySignupState extends State<MySignup> {
                                     return null;
                                   },
                                   borderInput: OutlineInputBorder(
-                                    borderSide: BorderSide(),
+                                    borderSide: const BorderSide(),
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                   controller: postController,
@@ -233,7 +237,8 @@ class _MySignupState extends State<MySignup> {
                                   controller: cinContrcinoller,
                                   isTextObscure: false,
                                   placeholder: "Cin",
-                                  iconPrefix: const Icon(Icons.person),
+                                  iconPrefix:
+                                      const Icon(Icons.credit_card_outlined),
                                   colorInputField: const Color(0xFFD9D9D9)),
 
                               TextFieldWidget(
@@ -252,9 +257,9 @@ class _MySignupState extends State<MySignup> {
                                   ),
                                   keyboardtype: TextInputType.number,
                                   controller: passwordController,
-                                  isTextObscure: false,
+                                  isTextObscure: true,
                                   placeholder: "Mot de passe",
-                                  iconPrefix: const Icon(Icons.person),
+                                  iconPrefix: const Icon(Icons.lock_outline),
                                   colorInputField: const Color(0xFFD9D9D9)),
 
                               SaveWidgetButon(
@@ -290,21 +295,34 @@ class _MySignupState extends State<MySignup> {
                                 },
                               ),
                               // The blockBuildr will manage the state right here
-                              BlocBuilder<SignupBloc, SignupUserState>(
+                              BlocListener<SignupBloc, SignupUserState>(
+                                listener: (context, state) {
+                                  if (state is SignupErrorState) {
+                                    showValidationCredentials(
+                                      context,
+                                      'Félicitation',
+                                      'Votre compte a été créé avec succès',
+                                      Icons.check,
+                                      const Color(0xFF1F7774),
+                                      '/login',
+                                    );
+                                  }
+                                },
+                                child: BlocBuilder<SignupBloc, SignupUserState>(
                                   builder: (context, state) {
-                                if (state is SignupErrorState) {
-                                  return Text(state.errormessage,
-                                      style:
-                                          const TextStyle(color: Colors.red));
-                                } else if (state is SignupSuccessState) {
-                                  return Text(state.successMessage,
-                                      style: const TextStyle(
-                                          color:
-                                              Color.fromARGB(255, 77, 86, 78)));
-                                } else {
-                                  return Container();
-                                }
-                              }),
+                                    if (state is SignupSuccessState) {
+                                      return Text(
+                                        state.successMessage,
+                                        style:
+                                            const TextStyle(color: Colors.red),
+                                      );
+                                    } else {
+                                      return Container();
+                                    }
+                                  },
+                                ),
+                              ),
+
                               const SizedBox(
                                 height: 10,
                               ),
