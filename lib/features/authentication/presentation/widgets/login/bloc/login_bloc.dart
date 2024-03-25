@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:bloc_app/features/authentication/data/implementation/user_repository_impl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 import '../../../../domain/model/auth_user.dart';

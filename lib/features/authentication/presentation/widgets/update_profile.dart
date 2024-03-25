@@ -1,17 +1,18 @@
-import 'package:bloc_app/core/connection_bar.dart';
-import 'package:bloc_app/core/connection_management.dart';
-import 'package:bloc_app/core/dependencies_injection.dart';
-import 'package:bloc_app/core/pop_up_messages.dart';
-import 'package:bloc_app/features/authentication/bloc/user_bloc.dart';
-import 'package:bloc_app/features/authentication/bloc/user_event.dart';
-import 'package:bloc_app/features/authentication/bloc/user_state.dart';
-import 'package:bloc_app/features/authentication/domain/model/user.dart';
-import 'package:bloc_app/features/authentication/presentation/widgets/signup/bloc/signup_bloc.dart';
-import 'package:bloc_app/features/authentication/presentation/widgets/signup/bloc/signup_event.dart';
-import 'package:bloc_app/features/authentication/presentation/widgets/subwidgets/button_navigation_bar.dart';
-import 'package:bloc_app/features/authentication/presentation/widgets/subwidgets/textFieldWidget.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pfechotranasmartvillage/features/authentication/presentation/widgets/signup/bloc/signup_bloc.dart';
+import 'package:pfechotranasmartvillage/features/authentication/presentation/widgets/signup/bloc/signup_event.dart';
+import 'package:pfechotranasmartvillage/features/authentication/presentation/widgets/subwidgets/button_navigation_bar.dart';
+import 'package:pfechotranasmartvillage/features/authentication/presentation/widgets/subwidgets/textFieldWidget.dart';
+
+import '../../../../core/connection_bar.dart';
+import '../../../../core/connection_management.dart';
+import '../../../../core/dependencies_injection.dart';
+import '../../bloc/user_bloc.dart';
+import '../../bloc/user_event.dart';
+import '../../bloc/user_state.dart';
+import '../../domain/model/user.dart';
 
 class UpdteProfile extends StatelessWidget {
   const UpdteProfile({super.key});
@@ -248,7 +249,7 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                             );
                           }
                           // Handle other states or return null if no UI should be shown
-                          return SizedBox
+                          return const SizedBox
                               .shrink(); // Example: Returns an empty SizedBox if not in UserSuccessState
                         },
                       ),
@@ -271,7 +272,7 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(10.0),
-                                          side: BorderSide(
+                                          side: const BorderSide(
                                               color: const Color(0xFF1F7774),
                                               width: 2.0),
                                         ),
@@ -282,25 +283,25 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                                           child: Column(
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Icon(
+                                              const Icon(
                                                 Icons.warning,
                                                 color: const Color(0xFF1F7774),
                                                 size: 50.0,
                                               ),
                                               const SizedBox(height: 15.0),
-                                              Text(
+                                              const Text(
                                                 "Confirmation",
-                                                style: const TextStyle(
+                                                style:  TextStyle(
                                                   color: Color(0xFF1F7774),
                                                   fontWeight: FontWeight.bold,
                                                   fontSize: 18.0,
                                                 ),
                                               ),
-                                              const SizedBox(height: 10.0),
-                                              Text(
+                                              const  SizedBox(height: 10.0),
+                                              const Text(
                                                 "Sauvegarder la modification?",
                                                 textAlign: TextAlign.center,
-                                                style: const TextStyle(
+                                                style:  TextStyle(
                                                   color: Color(0xFF1F7774),
                                                   fontSize: 16.0,
                                                 ),
@@ -318,7 +319,7 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                                                     },
                                                     style: ElevatedButton
                                                         .styleFrom(
-                                                      primary: const Color(
+                                                      backgroundColor: const Color(
                                                           0xFF1F7774),
                                                       shape:
                                                           RoundedRectangleBorder(
@@ -327,15 +328,17 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                                                                 .circular(8.0),
                                                       ),
                                                     ),
-                                                    child: Padding(
-                                                      padding: const EdgeInsets
+                                                    child: const Padding(
+                                                      padding:  EdgeInsets
                                                           .symmetric(
                                                           horizontal: 20.0,
                                                           vertical: 10.0),
-                                                      child: const Text(
-                                                        'Non',
+                                                      child:  Text(
+                                                        'oui',
                                                         style: TextStyle(
                                                           fontSize: 16.0,
+                                                          color: Colors.white,
+
                                                         ),
                                                       ),
                                                     ),
@@ -347,7 +350,7 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                                                     },
                                                     style: ElevatedButton
                                                         .styleFrom(
-                                                      primary: const Color(
+                                                      backgroundColor: const Color(
                                                           0xFF1F7774),
                                                       shape:
                                                           RoundedRectangleBorder(
@@ -403,17 +406,19 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                                                           }
                                                         }
                                                       },
-                                                      child: Padding(
+                                                      child: const Padding(
                                                         padding:
-                                                            const EdgeInsets
+                                                             EdgeInsets
                                                                 .symmetric(
                                                                 horizontal:
                                                                     20.0,
                                                                 vertical: 10.0),
-                                                        child: const Text(
-                                                          'Oui',
+                                                        child:  Text(
+                                                          'Non',
                                                           style: TextStyle(
                                                             fontSize: 16.0,
+                                                            color: Colors.white,
+
                                                           ),
                                                         ),
                                                       ),
@@ -440,6 +445,7 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
@@ -469,6 +475,8 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
+                                  color: Colors.white,
+
                                 ),
                               ),
                             ),

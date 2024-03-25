@@ -1,12 +1,13 @@
-import 'package:bloc_app/core/connection_bar.dart';
-import 'package:bloc_app/core/connection_management.dart';
-import 'package:bloc_app/core/dependencies_injection.dart';
-import 'package:bloc_app/features/authentication/bloc/user_bloc.dart';
-import 'package:bloc_app/features/authentication/bloc/user_event.dart';
-import 'package:bloc_app/features/authentication/bloc/user_state.dart';
-import 'package:bloc_app/features/authentication/presentation/widgets/subwidgets/button_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pfechotranasmartvillage/features/authentication/presentation/widgets/subwidgets/button_navigation_bar.dart';
+
+import '../../../../core/connection_bar.dart';
+import '../../../../core/connection_management.dart';
+import '../../../../core/dependencies_injection.dart';
+import '../../bloc/user_bloc.dart';
+import '../../bloc/user_event.dart';
+import '../../bloc/user_state.dart';
 
 class ProfileInfo extends StatelessWidget {
   const ProfileInfo({super.key});

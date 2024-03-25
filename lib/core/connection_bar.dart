@@ -47,7 +47,7 @@ void showConnectionFailedPopup(BuildContext context) {
                     Navigator.of(context).pop();
                   },
                   style: ElevatedButton.styleFrom(
-                    primary: Color(0xFF1F7774),
+                    backgroundColor: Color(0xFF1F7774),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),

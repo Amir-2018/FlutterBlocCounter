@@ -1,11 +1,12 @@
-import 'package:bloc_app/core/pop_up_messages.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pfechotranasmartvillage/features/authentication/presentation/widgets/profile_info.dart';
 
 import '../../../../../core/connection_bar.dart';
 import '../../../../../core/connection_management.dart';
 import '../../../../../core/dependencies_injection.dart';
+import '../../../../../core/pop_up_messages.dart';
 import '../../../domain/model/auth_user.dart';
 import '../subwidgets/saveWidgetButton.dart';
 import '../subwidgets/textFieldWidget.dart';
@@ -179,15 +180,14 @@ class _LoginState extends State<Login> {
                               SaveWidgetButon(
                                 buttonContent: 'Connexion',
                                 onTap: () async {
-                                  bool isConnected =
-                                      await checkConnection(); // Vérifier la connexion
+                                  //bool isConnected =
+                                     // await checkConnection(); // Vérifier la connexion
 
-                                  if (!isConnected) {
-                                    showConnectionFailedPopup(bigcontext);
-                                  } else {
+                                  //if (!isConnected) {
+                                   // showConnectionFailedPopup(bigcontext);
+                                  //} else
+                                 // {
                                     if ((_formKey.currentState!).validate()) {
-                                      Navigator.pushNamed(
-                                          context, '/profileinfo');
 
                                       BlocProvider.of<LoginBloc>(context).add(
                                           SubmitUserEvent(AuthUser(
@@ -196,11 +196,13 @@ class _LoginState extends State<Login> {
                                               password:
                                                   passwordController.text)));
                                     }
-                                  }
+                               //  }
                                 },
                               ),
-                              BlocBuilder<LoginBloc, LoginState>(
-                                  builder: (context, state) {
+                              MultiBlocListener(
+                              listeners: [
+                              BlocListener<LoginBloc, LoginState>(
+                                  listener: (context, state) {
                                 if (state is LoginErrorState) {
                                   showValidationCredentials(
                                       context,
@@ -208,17 +210,17 @@ class _LoginState extends State<Login> {
                                       'Merci de les vérifier.',
                                       Icons.error_outline,
                                       const Color(0xFF1F7774),
-                                      '');
-                                  return Container();
+                                      '/login');
+                                  //return Container();
                                 } else if (state is LoginSuccessState) {
-                                  return Text(state.successMessage,
-                                      style: const TextStyle(
-                                          color:
-                                              Color.fromARGB(255, 77, 86, 78)));
+                                  Navigator.pushNamed(
+                                      context, '/profileinfo');
+                                  //return  const Text('');
                                 } else {
-                                  return Container();
+                                  //return Container();
+                                  debugPrint('There is some exception error') ;
                                 }
-                              }),
+                              }),], child: const Text(''),),
                               const SizedBox(
                                 height: 15,
                               ),

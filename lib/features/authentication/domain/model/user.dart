@@ -45,13 +45,15 @@ class User {
     };
   }
 
-  /* Map<String, dynamic> toMap() {
-    final Map<String, dynamic> user = <String, dynamic>{
-      'id': id,
-      'name': name,
-      'username' : username,
-      'email' : email
-    };
-    return user ;
-  } */
+  factory User.fromMap(Map<dynamic, dynamic> map) {
+    return User(
+      username: map['username'],
+      email: map['email'],
+      password: map['password'],
+      telephone: map['telephone'],
+      establishment: map['establishment'],
+      post: map['post'],
+      cin: map['cin'],
+    );
+  }
 }

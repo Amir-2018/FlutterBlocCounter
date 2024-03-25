@@ -1,8 +1,7 @@
-import 'package:bloc_app/features/authentication/presentation/widgets/signup/bloc/signup_event.dart';
-import 'package:bloc_app/features/authentication/presentation/widgets/signup/bloc/signup_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:pfechotranasmartvillage/features/authentication/presentation/widgets/signup/bloc/signup_event.dart';
+import 'package:pfechotranasmartvillage/features/authentication/presentation/widgets/signup/bloc/signup_state.dart';
 import '../../../../domain/usecases/create_user_usecase.dart';
 
 class SignupBloc extends Bloc<SignupEvent, SignupUserState> {

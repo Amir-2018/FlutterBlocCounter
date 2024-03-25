@@ -1,5 +1,6 @@
-import 'package:bloc_app/features/authentication/domain/model/user.dart';
 import 'package:flutter/cupertino.dart';
+
+import '../domain/model/user.dart';
 
 @immutable
 abstract class UserState {}

@@ -13,7 +13,7 @@ class SqliteService {
       // onCreate() callback: It will be called when the database is created for the first time,
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE users(id INTEGER PRIMARY KEY, name TEXT, username TEXT, email TEXT)',
+            'CREATE TABLE users(id INTEGER PRIMARY KEY, username TEXT, email TEXT, password TEXT, telephone TEXT,establishment TEXT,post TEXT,cin TEXT,)',
         );
       },
       version: 1,
@@ -21,3 +21,4 @@ class SqliteService {
   }
 
 }
+

@@ -13,6 +13,8 @@ import '../datasources/local/database_helper.dart';
 class UserRepositoryImpl extends UserRepository {
   // Instance defined for test to mock objects
   Client client = Client();
+  // Inject the databas helper to manage sqllite
+  // Initialize database
   final storage = new FlutterSecureStorage();
 
   @override
@@ -33,10 +35,10 @@ class UserRepositoryImpl extends UserRepository {
         },
       );
       if (response.statusCode == 200) {
-        /* final data = json.decode(response.body) as Map<String, dynamic>;
+        final data = json.decode(response.body) as Map<String, dynamic>;
         String accessToken = '';
         accessToken = data['access_token'];
-        await storage.write(key: "access_token", value: accessToken);*/
+        await storage.write(key: "access_token", value: accessToken);
         return true;
       } else if (response.statusCode == 404) {
         debugPrint("User not found");
@@ -44,8 +46,8 @@ class UserRepositoryImpl extends UserRepository {
       } else if (response.statusCode == 401) {
         debugPrint("Utilisateur n'est pas autorisé ");
         return false;
-      } else {
-        debugPrint(response.statusCode.toString());
+      }
+      else {
         throw Exception('Failed to check user existence.');
       }
     } catch (e) {
@@ -56,7 +58,7 @@ class UserRepositoryImpl extends UserRepository {
   @override
   Future<User> createUser(User user) async {
     final response = await http.post(
-      Uri.parse('$HOST_ADDRESS/user'),
+      Uri.parse('$LINK/user'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -75,7 +77,7 @@ class UserRepositoryImpl extends UserRepository {
       try {
         initDependencies();
         getIt<DatabaseHelper>().initializeDatabase();
-        getIt<DatabaseHelper>().getUsers();
+        // getIt<DatabaseHelper>().getUsers();
       } catch (err) {
         debugPrint('There is some error here $err');
       }
@@ -89,7 +91,7 @@ class UserRepositoryImpl extends UserRepository {
   @override
   Future<User> updateUser(User user) async {
     final response = await http.put(
-      Uri.parse('$HOST_ADDRESS/update/username'),
+      Uri.parse('$LINK/update/username'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -112,7 +114,7 @@ class UserRepositoryImpl extends UserRepository {
   Future<bool> verifyEmail(String userEmail) async {
     try {
       final response = await http.post(
-        Uri.parse('$HOST_ADDRESS/verifyEmail'),
+        Uri.parse('$LINK/verifyEmail'),
         headers: <String, String>{
           'Content-Type': 'application/x-www-form-urlencoded',
         },
@@ -161,41 +163,45 @@ class UserRepositoryImpl extends UserRepository {
         debugPrint(response.statusCode.toString());
         throw Exception('Failed to send emaill');
       }
-    } catch (e) {
-      throw Exception('Failed to check email existence: $e');
+    }
+    catch (e) {
+      throw Exception('Failed to check email existence: ${e}');
     }
   }
+  DatabaseHelper databsaseHelper = DatabaseHelper() ;
 
   @override
   Future<User> getUserInfo(String username) async {
-    const User userInfo = User(
-      id: 1,
-      username: 'amir',
-      password: 'amir-169114',
-      email: 'amir.maalaoui27@gmail.com',
-      telephone: '93379344',
-      establishment: 'ACTIA',
-      post: 'Post at ACTIA',
-      cin: "'11398181",
-    );
-
-    return userInfo;
-
-    // String? value = await storage.read(key: 'access_token');
-    // debugPrint('Your token from storage $value');
-    /*final response = await http.get(
-      Uri.parse('$HOST_ADDRESS/user/$username'),
+    await databsaseHelper.initializeDatabase() ;
+    String? value = await storage.read(key: 'access_token');
+    final response = await http.get(
+      Uri.parse('$LINK/user/$username'),
       headers: {
         'Authorization': 'Bearer $value',
       },
-    );*/
-    /*debugPrint((response.statusCode).toString());
+    );
+    debugPrint((response.statusCode).toString());
     if (response.statusCode == 200) {
+
+      User userInfo =  User.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+
+      return userInfo ;
       return json.decode(response.body);
-    } else {
-      debugPrint('Error fetching data: $response');
+    }
+
+    else {
+      /*debugPrint('Error fetching data: $response');
       debugPrint('Check this ${response.statusCode}');
-      throw Exception('Failed to get user info: ${response.statusCode}');
-    }*/
+      throw Exception('Failed to get user info: ${response.statusCode}');*/
+
+      Map<dynamic, dynamic>? userData = await databsaseHelper.getFirstUser();
+      if (userData != null) {
+        User user = User.fromMap(userData);
+        debugPrint('The user is $user') ;
+        return user ;
+      } else {
+        throw Exception('User not found');
+      }
+    }
   }
 }

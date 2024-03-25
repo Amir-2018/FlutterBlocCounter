@@ -50,7 +50,7 @@ void showValidationPopup(BuildContext context) {
                       // Perform save operation here
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: const Color(0xFF1F7774),
+                      backgroundColor: const Color(0xFF1F7774),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
@@ -72,8 +72,7 @@ void showValidationPopup(BuildContext context) {
                       Navigator.of(context).pop();
                     },
                     style: ElevatedButton.styleFrom(
-                      primary:
-                          Colors.grey[400], // Couleur grise pour l'annulation
+                      backgroundColor: Colors.grey[400], // Couleur grise pour l'annulation
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
                       ),
@@ -145,23 +144,28 @@ void showValidationCredentials(BuildContext context, String title,
                   Navigator.of(context).pop();
                 },
                 style: ElevatedButton.styleFrom(
-                  primary: const Color(0xFF1F7774),
+                  backgroundColor: const Color(0xFF1F7774),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20.0, vertical: 10.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(context, link);
-                    },
-                    child: const Text(
-                      'OK',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                      ),
+                child: GestureDetector(
+                  onTap: () {
+                    //Navigator.pushNamed(context, 'No-way');
+                  },
+                  child: Container(
+                    child: const Padding(
+                      padding:  EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 10.0),
+                        child:  Text(
+                          'OK',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+
                     ),
                   ),
                 ),

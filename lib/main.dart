@@ -1,6 +1,6 @@
-import 'package:bloc_app/features/authentication/presentation/widgets/home/get_started.dart';
 import 'package:flutter/material.dart';
 import 'features/authentication/presentation/widgets/change_password/change_password.dart';
+import 'features/authentication/presentation/widgets/home/get_started.dart';
 import 'features/authentication/presentation/widgets/home/mode.dart';
 import 'features/authentication/presentation/widgets/home/services.dart';
 import 'features/authentication/presentation/widgets/login/login.dart';
@@ -17,7 +17,7 @@ void main() {
       title: 'Chotrana smart village',
       debugShowCheckedModeBanner: false,
       // Define routes
-      initialRoute: '/get_started',
+      initialRoute: '/profileinfo',
       routes: {
         '/update_profile': (context) => UpdteProfile(),
         '/signup': (context) => SignupWidget(),
@@ -34,3 +34,44 @@ void main() {
     ),
   );
 }
+
+/*void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  final storage = FlutterSecureStorage();
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<String>(
+      future: storage.read(key: 'access_token').then((value) => value ?? ''), // Convert Future<String?> to Future<String>
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          String initialRoute = snapshot.hasData ? '/profileinfo' : '/get_started';
+
+          return MaterialApp(
+            title: 'Chotrana smart village',
+            debugShowCheckedModeBanner: false,
+            initialRoute: initialRoute,
+            routes: {
+              '/update_profile': (context) => UpdteProfile(),
+              '/signup': (context) => SignupWidget(),
+              '/verifyEmail': (context) => VerifyEmail(),
+              '/changePassword': (context) => const ChangePassword(),
+              '/login': (context) => const LoginWidget(),
+              '/services': (context) => Services(),
+              '/mode': (context) => Mode(),
+              '/profileinfo': (context) => ProfileInfo(),
+              '/simpleBottomNavigation': (context) => ButtonNavigationBar(),
+              '/get_started': (context) => GetStartedApp(),
+            },
+          );
+        } else {
+          return CircularProgressIndicator(); // Show a loading indicator while checking for the token
+        }
+      },
+    );
+  }
+}
+*/
