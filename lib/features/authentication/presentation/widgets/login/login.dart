@@ -1,9 +1,5 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pfechotranasmartvillage/features/authentication/presentation/widgets/profile_info.dart';
-
-import '../../../../../core/connection_bar.dart';
 import '../../../../../core/connection_management.dart';
 import '../../../../../core/dependencies_injection.dart';
 import '../../../../../core/pop_up_messages.dart';
@@ -45,7 +41,7 @@ class _LoginState extends State<Login> {
       body: Stack(
         children: [
           Container(
-              color: const Color(0xFF1F7774),
+              color: const Color(0xFF7FB77E),
               //.withOpacity(0.7), // Adjust color and opacity as needed
               constraints: const BoxConstraints.expand()),
           Positioned(
@@ -65,7 +61,7 @@ class _LoginState extends State<Login> {
                   key: _formKey,
                   child: Stack(children: [
                     Container(
-                      color: const Color(0xFF1F7774),
+                      color: const Color(0xFF7FB77E),
                     ),
                     Column(
                       children: [
@@ -99,7 +95,7 @@ class _LoginState extends State<Login> {
                                 style: TextStyle(
                                     fontSize: 25,
                                     fontWeight: FontWeight.bold,
-                                    color: Color(0xFF1F7774)),
+                                    color: Color(0xFF7FB77E)),
                               ),
                               const SizedBox(
                                 height: 15,
@@ -145,7 +141,14 @@ class _LoginState extends State<Login> {
                                       await checkConnection(); // Vérifier la connexion
 
                                   if (!isConnected) {
-                                    showConnectionFailedPopup(bigcontext);
+                                    showValidationCredentials(
+                                      context,
+                                      'Échec de la connexion',
+                                      'Veuillez vérifier votre connexion Internet et réessayer.',
+                                      Icons.error_outline,
+                                      const Color(0xFF7FB77E),
+                                      //'/login'
+                                    );
                                   } else {
                                     //if ((_formKey.currentState!).validate()) {
                                     Navigator.pushNamed(
@@ -165,8 +168,7 @@ class _LoginState extends State<Login> {
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 14,
-                                        color: Color(
-                                            0xFF1F7774), // Changing color to a typical link color
+                                        color: Color(0xFF7FB77E), // Changing color to a typical link color
                                         //  : TextDecoration
                                         //.underline,
                                       ),
@@ -180,13 +182,20 @@ class _LoginState extends State<Login> {
                               SaveWidgetButon(
                                 buttonContent: 'Connexion',
                                 onTap: () async {
-                                  //bool isConnected =
-                                     // await checkConnection(); // Vérifier la connexion
+                                  bool isConnected =
+                                      await checkConnection(); // Vérifier la connexion
 
-                                  //if (!isConnected) {
-                                   // showConnectionFailedPopup(bigcontext);
-                                  //} else
-                                 // {
+                                  if (!isConnected) {
+                                    showValidationCredentials(
+                                      context,
+                                      'Échec de la connexion',
+                                      'Veuillez vérifier votre connexion Internet et réessayer.',
+                                      Icons.error_outline,
+                                      const Color(0xFF7FB77E),
+                                      //'/login'
+                                    );
+                                  } else
+                                  {
                                     if ((_formKey.currentState!).validate()) {
 
                                       BlocProvider.of<LoginBloc>(context).add(
@@ -196,31 +205,29 @@ class _LoginState extends State<Login> {
                                               password:
                                                   passwordController.text)));
                                     }
-                               //  }
+                                 }
                                 },
                               ),
                               MultiBlocListener(
                               listeners: [
-                              BlocListener<LoginBloc, LoginState>(
+                                BlocListener<LoginBloc, LoginState>(
                                   listener: (context, state) {
-                                if (state is LoginErrorState) {
-                                  showValidationCredentials(
-                                      context,
-                                      'Données erronées',
-                                      'Merci de les vérifier.',
-                                      Icons.error_outline,
-                                      const Color(0xFF1F7774),
-                                      '/login');
-                                  //return Container();
-                                } else if (state is LoginSuccessState) {
-                                  Navigator.pushNamed(
-                                      context, '/profileinfo');
-                                  //return  const Text('');
-                                } else {
-                                  //return Container();
-                                  debugPrint('There is some exception error') ;
-                                }
-                              }),], child: const Text(''),),
+                                    if (state is LoginErrorState) {
+                                      showValidationCredentials(
+                                          context,
+                                          'Données erronées',
+                                          'Merci de les vérifier.',
+                                          Icons.error_outline,
+                                          const Color(0xFF7FB77E),
+                                          //'/login'
+                                      );
+                                    } else if (state is LoginSuccessState) {
+                                      Navigator.pushNamed(context, '/services');
+                                    } else {
+                                      debugPrint('There is some exception error');
+                                    }
+                                  },
+                                ),], child: const Text(''),),
                               const SizedBox(
                                 height: 15,
                               ),

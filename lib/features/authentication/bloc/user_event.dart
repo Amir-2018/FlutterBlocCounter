@@ -11,3 +11,8 @@ class UserInfoEvent extends UserEvent {
   final User userInfo;
   UserInfoEvent(this.userInfo);
 }
+
+// Log out code
+
+class LogOutEvent extends UserEvent {}
+

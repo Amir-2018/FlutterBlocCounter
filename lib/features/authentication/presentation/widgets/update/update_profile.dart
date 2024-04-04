@@ -2,17 +2,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pfechotranasmartvillage/features/authentication/presentation/widgets/signup/bloc/signup_bloc.dart';
-import 'package:pfechotranasmartvillage/features/authentication/presentation/widgets/signup/bloc/signup_event.dart';
 import 'package:pfechotranasmartvillage/features/authentication/presentation/widgets/subwidgets/button_navigation_bar.dart';
 import 'package:pfechotranasmartvillage/features/authentication/presentation/widgets/subwidgets/textFieldWidget.dart';
-
-import '../../../../core/connection_bar.dart';
-import '../../../../core/connection_management.dart';
-import '../../../../core/dependencies_injection.dart';
-import '../../bloc/user_bloc.dart';
-import '../../bloc/user_event.dart';
-import '../../bloc/user_state.dart';
-import '../../domain/model/user.dart';
+import 'package:pfechotranasmartvillage/features/authentication/presentation/widgets/update/bloc/update_bloc.dart';
+import 'package:pfechotranasmartvillage/features/authentication/presentation/widgets/update/bloc/update_event.dart';
+import 'package:pfechotranasmartvillage/features/authentication/presentation/widgets/update/bloc/update_state.dart';
+import '../../../../../core/connection_management.dart';
+import '../../../../../core/dependencies_injection.dart';
+import '../../../../../core/pop_up_messages.dart';
+import '../../../bloc/user_bloc.dart';
+import '../../../bloc/user_event.dart';
+import '../../../bloc/user_state.dart';
+import '../../../domain/model/user.dart';
+import '../subwidgets/button_update.dart';
 
 class UpdteProfile extends StatelessWidget {
   const UpdteProfile({super.key});
@@ -28,6 +30,9 @@ class UpdteProfile extends StatelessWidget {
         ),
         BlocProvider<SignupBloc>(
           create: (context) => getIt<SignupBloc>(),
+        ),
+        BlocProvider<UpdateBloc>(
+          create: (context) => getIt<UpdateBloc>(),
         ),
       ], child: UpdateWidget()),
     );
@@ -178,7 +183,7 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                                           const BorderSide(color: Colors.grey),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
-                                    iconPrefix: const Icon(Icons.work_outline,
+                                    iconPrefix: const Icon(Icons.business,
                                         color: Color(0xff414141)),
                                     keyboardtype: TextInputType.multiline,
                                     controller: cinController,
@@ -198,7 +203,7 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                                           const BorderSide(color: Colors.grey),
                                       borderRadius: BorderRadius.circular(10),
                                     ),
-                                    iconPrefix: const Icon(Icons.business,
+                                    iconPrefix: const Icon(Icons.work_outline,
                                         color: Color(0xff414141)),
                                     keyboardtype: TextInputType.multiline,
                                     controller: posteController,
@@ -248,7 +253,6 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                               ],
                             );
                           }
-                          // Handle other states or return null if no UI should be shown
                           return const SizedBox
                               .shrink(); // Example: Returns an empty SizedBox if not in UserSuccessState
                         },
@@ -256,234 +260,71 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          SizedBox(
-                            width: 150,
-                            child: FloatingActionButton.extended(
-                              onPressed: () async {
-                                bool isConnected =
-                                    await checkConnection(); // Check connection
-                                if (!isConnected) {
-                                  showConnectionFailedPopup(context);
-                                } else {
-                                  bool confirmation = await showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return Dialog(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          side: const BorderSide(
-                                              color: const Color(0xFF1F7774),
-                                              width: 2.0),
-                                        ),
-                                        backgroundColor: Colors.white,
-                                        elevation: 5,
-                                        child: Container(
-                                          padding: const EdgeInsets.all(20.0),
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              const Icon(
-                                                Icons.warning,
-                                                color: const Color(0xFF1F7774),
-                                                size: 50.0,
-                                              ),
-                                              const SizedBox(height: 15.0),
-                                              const Text(
-                                                "Confirmation",
-                                                style:  TextStyle(
-                                                  color: Color(0xFF1F7774),
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 18.0,
-                                                ),
-                                              ),
-                                              const  SizedBox(height: 10.0),
-                                              const Text(
-                                                "Sauvegarder la modification?",
-                                                textAlign: TextAlign.center,
-                                                style:  TextStyle(
-                                                  color: Color(0xFF1F7774),
-                                                  fontSize: 16.0,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 20.0),
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  ElevatedButton(
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop(false);
-                                                    },
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                      backgroundColor: const Color(
-                                                          0xFF1F7774),
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(8.0),
-                                                      ),
-                                                    ),
-                                                    child: const Padding(
-                                                      padding:  EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 20.0,
-                                                          vertical: 10.0),
-                                                      child:  Text(
-                                                        'oui',
-                                                        style: TextStyle(
-                                                          fontSize: 16.0,
-                                                          color: Colors.white,
 
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  ElevatedButton(
-                                                    onPressed: () {
-                                                      Navigator.of(context)
-                                                          .pop(true);
-                                                    },
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                      backgroundColor: const Color(
-                                                          0xFF1F7774),
-                                                      shape:
-                                                          RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(8.0),
-                                                      ),
-                                                    ),
-                                                    child: GestureDetector(
-                                                      onTap: () async {
-                                                        bool isConnected =
-                                                            await checkConnection(); // Vérifier la connexion
-
-                                                        if (!isConnected) {
-                                                          showConnectionFailedPopup(
-                                                              context);
-                                                        } else {
-                                                          if ((_formKey
-                                                                  .currentState!)
-                                                              .validate()) {
-                                                            //const snackBar = SnackBar(content: Text('Valid'));
-                                                            //ScaffoldMessenger.of(context)
-                                                            //.showSnackBar(snackBar);
-                                                            var usernameController;
-                                                            BlocProvider.of<
-                                                                        SignupBloc>(
-                                                                    context)
-                                                                .add(
-                                                                    CreateUserEvent(
-                                                                        User(
-                                                              // id : 3,
-                                                              username:
-                                                                  usernameController
-                                                                      .text,
-                                                              password:
-                                                                  passwordController
-                                                                      .text,
-                                                              email:
-                                                                  emailController
-                                                                      .text,
-                                                              telephone:
-                                                                  telephoneController
-                                                                      .text,
-                                                              establishment:
-                                                                  establishmentController
-                                                                      .text,
-                                                              post:
-                                                                  posteController
-                                                                      .text,
-                                                              cin: cinController
-                                                                  .text,
-                                                            )));
-                                                          }
-                                                        }
-                                                      },
-                                                      child: const Padding(
-                                                        padding:
-                                                             EdgeInsets
-                                                                .symmetric(
-                                                                horizontal:
-                                                                    20.0,
-                                                                vertical: 10.0),
-                                                        child:  Text(
-                                                          'Non',
-                                                          style: TextStyle(
-                                                            fontSize: 16.0,
-                                                            color: Colors.white,
-
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                }
-                              },
-
-                              //showValidationPopup(context)
-                              heroTag: 'follow',
-                              elevation: 0,
-                              backgroundColor: const Color(0xFF1F7774),
-                              foregroundColor: const Color(0xffffffff),
-                              label: const Text(
-                                "Enregistrer",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
                           const SizedBox(width: 16.0),
+
                           SizedBox(
                             width: 150,
-                            child: FloatingActionButton.extended(
-                              onPressed: () async {
-                                bool isConnected =
-                                    await checkConnection(); // Vérifier la connexion
+                            child: ButtonUpdate(onTap: () async{
+                              bool isConnected = await checkConnection(); // Vérifier la connexion
 
-                                if (!isConnected) {
-                                  showConnectionFailedPopup(context);
-                                } else {
-                                  Navigator.pushNamed(context, '/profileinfo');
+                              if (!isConnected) {
+                                showValidationCredentials(
+                                  context,
+                                  'Échec de la connexion',
+                                  'Veuillez vérifier votre connexion Internet et réessayer.',
+                                  Icons.error_outline,
+                                  const Color(0xFF1F7774),
+                                  //'/login'
+                                );                              } else {
+                                bool shouldUpdate = await showValidationDialog(context, Icons.check, 'Voulez-vous sauvegarder les changements?');
+                                if (shouldUpdate) {
+                                  BlocProvider.of<UpdateBloc>(context).add(UpdateUserEvent(
+                                    fullNameController.text,
+                                    User(
+                                      username: fullNameController.text,
+                                      password: passwordController.text,
+                                      email: emailController.text,
+                                      telephone: telephoneController.text,
+                                      establishment: establishmentController.text,
+                                      post: posteController.text,
+                                      cin: cinController.text,
+                                    ),
+                                  ));
                                 }
-                              },
-
-                              heroTag: 'Verify',
-                              elevation: 0,
-                              foregroundColor: Colors.white,
-                              backgroundColor: Colors
-                                  .redAccent, // Adjusted to red for cancellation
-                              label: const Text(
-                                "Annuler",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                  color: Colors.white,
-
-                                ),
-                              ),
-                            ),
+                              }
+                            }, buttonContent: 'Enregistrer', colorButton: const Color(0xFF1F7774),),
                           ),
+                          const SizedBox(width: 16,),
+                          SizedBox(
+                            width: 150,
+                            child: ButtonUpdate(onTap: () {
+                              Navigator.pushNamed(context, '/profileInfo');
+                            }, buttonContent: 'Annuler', colorButton: const Color(0xFFF28F8F),),
+                          )
+
                         ],
                       ),
-
+                      MultiBlocListener(
+                        listeners: [
+                          BlocListener<UpdateBloc, UpdateUserState>(
+                            listener: (context, state) {
+                              if (state is UpdateErrorState) {
+                                showValidationCredentials(
+                                    context,
+                                    'Les données ne sont pas modifiées',
+                                    'erruer',
+                                    Icons.error_outline,
+                                    const Color(0xFF1F7774),
+                                    //'/login'
+                                );
+                              } else if (state is UpdateSuccessState) {
+                                Navigator.pushNamed(context, '/profileInfo');
+                              } else {
+                                debugPrint('There is some exception error');
+                              }
+                            },
+                          ),], child: const Text(''),),
                       //const _ProfileInfoRow()
                     ],
                   ),
@@ -543,8 +384,6 @@ class _TopPortion extends StatelessWidget {
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                     child: Container(
                       margin: const EdgeInsets.all(8.0),
-                      /*decoration: const BoxDecoration(
-                          color: Colors.green, shape: BoxShape.circle),*/
                       child: const Icon(
                         Icons.edit_outlined,
                       ),

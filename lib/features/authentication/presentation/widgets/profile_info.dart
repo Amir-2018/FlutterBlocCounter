@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pfechotranasmartvillage/features/authentication/presentation/widgets/subwidgets/button_navigation_bar.dart';
+import 'package:pfechotranasmartvillage/features/authentication/presentation/widgets/subwidgets/dynamic_connection_widget.dart';
 
-import '../../../../core/connection_bar.dart';
 import '../../../../core/connection_management.dart';
 import '../../../../core/dependencies_injection.dart';
 import '../../bloc/user_bloc.dart';
@@ -21,15 +21,29 @@ class ProfileInfo extends StatelessWidget {
         BlocProvider<UserBloc>(
           create: (context) => getIt<UserBloc>()..add(UserInfoEventInitial()),
         ),
+
       ], child: const ProfileInfoWidget()),
     );
   }
 }
 
-class ProfileInfoWidget extends StatelessWidget {
+class ProfileInfoWidget extends StatefulWidget {
   const ProfileInfoWidget({Key? key}) : super(key: key);
+
   @override
-  Widget build(BuildContext context) {
+  State<StatefulWidget> createState() {
+    return _ProfileInfoWidgetState() ;
+  }
+}
+
+class _ProfileInfoWidgetState extends State<ProfileInfoWidget> {
+  @override
+  void initState() {
+    super.initState();
+    startConnectionCheckTimer(); // Start the timer when the widget initializes
+  }
+  @override
+  Widget build(BuildContext context)  {
     return Scaffold(
       body: Column(
         children: [
@@ -104,7 +118,7 @@ class ProfileInfoWidget extends StatelessWidget {
                                       )),
                                       Center(
                                         child: Text(
-                                          state.userObject.establishment,
+                                          state.userObject.post,
                                         ),
                                       ),
                                     ],
@@ -166,42 +180,21 @@ class ProfileInfoWidget extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        FloatingActionButton.extended(
-                          onPressed: () {},
-                          heroTag: 'follow',
-                          elevation: 0,
-                          backgroundColor: const Color(0xFF1F7774),
-                          label: const Text(
-                            "Manage Events",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: Colors.white),
-                          ),
-                        ),
+
+                        DynamicConnexionWidget(buttonColor: Color(0xFF7FB77E), buttonContent: 'Manage Events', link: '/profileInfo', tag: 'btn1',),
                         const SizedBox(width: 16.0),
-                        FloatingActionButton.extended(
-                          onPressed: () {},
-                          heroTag: 'Verify',
-                          elevation: 0,
-                          backgroundColor: const Color(0xff607274),
-                          label: const Text(
-                            "Verify",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                                color: Colors.white),
-                          ),
-                        ),
+                        DynamicConnexionWidget(buttonColor: Color(0xFFA9A91C), buttonContent: 'Verify', link: '/profileInfo', tag: 'btn2',),
+
                       ],
                     ),
+
                     //const _ProfileInfoRow()
                   ],
                 ),
               ),
             ),
           ),
-          const ButtonNavigationBar()
+           const ButtonNavigationBar()
         ],
       ),
     );
@@ -214,15 +207,17 @@ class _TopPortion extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
+
       fit: StackFit.expand,
       children: [
+
         Container(
           margin: const EdgeInsets.only(bottom: 50),
           decoration: const BoxDecoration(
               gradient: LinearGradient(
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
-                  colors: [Color(0xFF1F7774), Color(0xFF1F7774)]),
+                  colors: [Color(0xFF7FB77E), Color(0xFF7FB77E)]),
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(50),
                 bottomRight: Radius.circular(50),
@@ -251,10 +246,21 @@ class _TopPortion extends StatelessWidget {
                   child: CircleAvatar(
                     radius: 20,
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                    child: Container(
-                      margin: const EdgeInsets.all(8.0),
-                      decoration: const BoxDecoration(
-                          color: Color(0xff5D805E), shape: BoxShape.circle),
+                    child: StreamBuilder<bool>(
+                      stream: connectionStream.stream,
+                      initialData: true,
+                      builder: (context, snapshot) {
+                        bool isConnected = snapshot.data ?? false;
+                        Color containerColor = isConnected ? const Color(0xff5D805E) : const Color(0xffF28F8F);
+
+                        return Container(
+                          margin: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            color: containerColor,
+                            shape: BoxShape.circle,
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -268,10 +274,9 @@ class _TopPortion extends StatelessWidget {
             margin: const EdgeInsets.only(top: 10, right: 15),
             decoration: BoxDecoration(
               border: Border.all(color: const Color(0xffF5F0E3), width: 2),
-              color: const Color(0xFF1F7774),
+              color: const Color(0xFF7FB77E),
               shape: BoxShape.circle,
             ),
-            //padding: EdgeInsets.only(right: 20,top :50),
             child: IconButton(
               iconSize: 30,
               icon: const Icon(
@@ -281,16 +286,13 @@ class _TopPortion extends StatelessWidget {
               onPressed: () async {
                 bool isConnected =
                     await checkConnection(); // Vérifier la connexion
-
-                if (!isConnected) {
-                  showConnectionFailedPopup(context);
-                } else {
                   Navigator.pushNamed(context, '/update_profile');
-                }
+              //  }
               },
             ),
           ),
         ),
+
       ],
     );
   }

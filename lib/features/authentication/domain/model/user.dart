@@ -56,4 +56,17 @@ class User {
       cin: map['cin'],
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'username': username,
+      'password': password,
+      'email': email,
+      'telephone': telephone,
+      'establishment': establishment,
+      'post': post,
+      'cin': cin,
+    };
+  }
 }

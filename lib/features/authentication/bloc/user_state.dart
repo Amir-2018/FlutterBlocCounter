@@ -19,3 +19,13 @@ class UserFailedState extends UserState {
   final User userObject;
   UserFailedState(this.userObject);
 }
+// Log out code
+class LogOutSucessState extends UserState {
+  final bool msg;
+  LogOutSucessState(this.msg);
+}
+
+class LogOutErrorState extends UserState {
+  final bool msg;
+  LogOutErrorState(this.msg);
+}

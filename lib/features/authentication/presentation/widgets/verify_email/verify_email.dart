@@ -1,7 +1,9 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../core/connection_management.dart';
 import '../../../../../core/dependencies_injection.dart';
+import '../../../../../core/pop_up_messages.dart';
 import '../login/bloc/login_bloc.dart';
 import '../subwidgets/saveWidgetButton.dart';
 import '../subwidgets/textFieldWidget.dart';
@@ -12,10 +14,7 @@ class VerifyEmail extends StatelessWidget {
   Widget build(BuildContext context) {
     initDependencies();
     return Scaffold(
-      /* appBar: AppBar(
-        backgroundColor: const Color(0xFFFFFFFF),
-        foregroundColor: const Color(0xFF2B6353),
-      ),*/
+
       body: MultiBlocProvider(providers: [
         BlocProvider<LoginBloc>(
           create: (context) => getIt<LoginBloc>(
@@ -49,17 +48,12 @@ class _VerifyEmailState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      /* appBar: AppBar(
-        backgroundColor: const Color(0xFF1F7774),
-        foregroundColor: const Color(0xFFFFFFFF),
-      ), */
+
       body: Stack(
         children: [
           Container(
-// Adjust the position of the icon as needed
 
               color: const Color(0xFF1F7774),
-              //.withOpacity(0.7), // Adjust color and opacity as needed
               constraints: const BoxConstraints.expand()),
           Positioned(
             bottom: 0.0,
@@ -139,37 +133,21 @@ class _VerifyEmailState extends State<Login> {
                               const SizedBox(
                                 height: 10,
                               ),
-                              SaveWidgetButon(
-                                buttonContent: 'Connexion',
-                                onTap: () {
-                                  if ((_formKey.currentState!).validate()) {
-                                    Navigator.pushNamed(
-                                        context, '/changePassword');
 
-                                    /*BlocProvider.of<LoginBloc>(context).add(
-                                        SubmitUserEvent(AuthUser(
-                                            // id : 3,
-                                            username: usernameController.text,
-                                            password:
-                                                passwordController.text)));*/
-                                  }
-                                },
-                              ),
-                              BlocBuilder<LoginBloc, LoginState>(
-                                  builder: (context, state) {
-                                if (state is LoginErrorState) {
-                                  return Text(state.errormessage,
-                                      style:
-                                          const TextStyle(color: Colors.red));
-                                } else if (state is LoginSuccessState) {
-                                  return Text(state.successMessage,
-                                      style: const TextStyle(
-                                          color:
-                                              Color.fromARGB(255, 77, 86, 78)));
-                                } else {
-                                  return Container();
-                                }
-                              }),
+                              SaveWidgetButon(buttonContent: 'Envoyer', onTap: () async{    bool isConnected =
+                                  await checkConnection();
+                              if (!isConnected) {
+                                showValidationCredentials(
+                                  context,
+                                  'Échec de la connexion',
+                                  'Veuillez vérifier votre connexion Internet et réessayer.',
+                                  Icons.error_outline,
+                                  const Color(0xFF1F7774),
+                                  //'/login'
+                                );                              }else{
+                                Navigator.pushNamed(context, '/changePassword');
+                              } },),
+
                               const SizedBox(
                                 height: 15,
                               ),

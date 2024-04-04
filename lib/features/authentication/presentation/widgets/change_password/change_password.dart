@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../../core/dependencies_injection.dart';
+import '../../../../../core/connection_management.dart';
+import '../../../../../core/pop_up_messages.dart';
 import '../login/bloc/login_bloc.dart';
 import '../subwidgets/saveWidgetButton.dart';
 import '../subwidgets/textFieldWidget.dart';
@@ -13,14 +15,10 @@ class ChangePassword extends StatelessWidget {
   Widget build(BuildContext context) {
     initDependencies();
     return Scaffold(
-      /* appBar: AppBar(
-        backgroundColor: const Color(0xFFFFFFFF),
-        foregroundColor: const Color(0xFF2B6353),
-      ),*/
+
       body: MultiBlocProvider(providers: [
         BlocProvider<LoginBloc>(
           create: (context) => getIt<LoginBloc>(
-              //getIt<CreateUseCase>()
               ),
         ),
       ], child: ChangePasswordWidget()),
@@ -154,37 +152,20 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
                                   placeholder: "Confirmer Mot de passe",
                                   iconPrefix: const Icon(Icons.lock_outline),
                                   colorInputField: const Color(0xFFD9D9D9)),
-                              SaveWidgetButon(
-                                buttonContent: 'Connexion',
-                                onTap: () {
-                                  if ((_formKey.currentState!).validate()) {
-                                    Navigator.pushNamed(
-                                        context, '/changePassword');
+                              SaveWidgetButon(buttonContent: 'Envoyer', onTap: () async{    bool isConnected =
+                              await checkConnection();
+                              if (!isConnected) {
+                                showValidationCredentials(
+                                  context,
+                                  'Échec de la connexion',
+                                  'Veuillez vérifier votre connexion Internet et réessayer.',
+                                  Icons.error_outline,
+                                  const Color(0xFF1F7774),
+                                  //'/login'
+                                );                              }else{
+                                Navigator.pushNamed(context, '/changePassword');
+                              } },),
 
-                                    /*BlocProvider.of<LoginBloc>(context).add(
-                                        SubmitUserEvent(AuthUser(
-                                            // id : 3,
-                                            username: usernameController.text,
-                                            password:
-                                                passwordController.text)));*/
-                                  }
-                                },
-                              ),
-                              BlocBuilder<LoginBloc, LoginState>(
-                                  builder: (context, state) {
-                                if (state is LoginErrorState) {
-                                  return Text(state.errormessage,
-                                      style:
-                                          const TextStyle(color: Colors.red));
-                                } else if (state is LoginSuccessState) {
-                                  return Text(state.successMessage,
-                                      style: const TextStyle(
-                                          color:
-                                              Color.fromARGB(255, 77, 86, 78)));
-                                } else {
-                                  return Container();
-                                }
-                              }),
                               const SizedBox(
                                 height: 15,
                               ),

@@ -1,7 +1,7 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../../core/connection_bar.dart';
+import 'package:pfechotranasmartvillage/features/authentication/presentation/widgets/login/bloc/login_bloc.dart';
 import '../../../../../core/connection_management.dart';
 import '../../../../../core/dependencies_injection.dart';
 import '../../../../../core/pop_up_messages.dart';
@@ -18,10 +18,7 @@ class SignupWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     initDependencies();
     return Scaffold(
-      /* appBar: AppBar(
-        backgroundColor: const Color(0xFFFFFFFF),
-        foregroundColor: const Color(0xFF2B6353),
-      ),*/
+
       body: MultiBlocProvider(providers: [
         BlocProvider<SignupBloc>(
           create: (context) => getIt<SignupBloc>(
@@ -80,7 +77,7 @@ class _MySignupState extends State<MySignup> {
           //  color: const Color(0xFF1F7774),
           //),
           Container(
-              color: const Color(0xFF1F7774),
+              color: const Color(0xFF7FB77E),
               //.withOpacity(0.7), // Adjust color and opacity as needed
               constraints: const BoxConstraints.expand()),
           Container(
@@ -118,7 +115,7 @@ class _MySignupState extends State<MySignup> {
                                 style: TextStyle(
                                     fontSize: 25,
                                     fontWeight: FontWeight.bold,
-                                    color: Color(0xFF1F7774)),
+                                    color: Color(0xFF7FB77E)),
                               ),
                               const SizedBox(
                                 height: 50,
@@ -269,8 +266,14 @@ class _MySignupState extends State<MySignup> {
                                       await checkConnection(); // Vérifier la connexion
 
                                   if (!isConnected) {
-                                    showConnectionFailedPopup(context);
-                                  } else {
+                                    showValidationCredentials(
+                                      context,
+                                      'Échec de la connexion',
+                                      'Veuillez vérifier votre connexion Internet et réessayer.',
+                                      Icons.error_outline,
+                                      const Color(0xFF1F7774),
+                                      //'/login'
+                                    );                                  } else {
                                     if ((_formKey.currentState!).validate()) {
                                       //const snackBar = SnackBar(content: Text('Valid'));
                                       //ScaffoldMessenger.of(context)
@@ -295,9 +298,9 @@ class _MySignupState extends State<MySignup> {
                                 },
                               ),
                               // The blockBuildr will manage the state right here
-                              BlocListener<SignupBloc, SignupUserState>(
+                             /* BlocListener<SignupBloc, SignupUserState>(
                                 listener: (context, state) {
-                                  if (state is SignupErrorState) {
+                                  if (state is SignupSuccessState) {
                                     showValidationCredentials(
                                       context,
                                       'Félicitation',
@@ -306,6 +309,8 @@ class _MySignupState extends State<MySignup> {
                                       const Color(0xFF1F7774),
                                       '/login',
                                     );
+                                  }else{
+
                                   }
                                 },
                                 child: BlocBuilder<SignupBloc, SignupUserState>(
@@ -314,14 +319,43 @@ class _MySignupState extends State<MySignup> {
                                       return Text(
                                         state.successMessage,
                                         style:
-                                            const TextStyle(color: Colors.red),
+                                        const TextStyle(color: Colors.red),
                                       );
                                     } else {
                                       return Container();
                                     }
                                   },
                                 ),
-                              ),
+                              ),*/
+
+                              MultiBlocListener(
+                                listeners: [
+                                  BlocListener<SignupBloc, SignupUserState>(
+                                    listener: (context, state) {
+                                      if (state is SignupSuccessState) {
+                                        showValidationCredentials(
+                                            context,
+                                            'Félicitation',
+                                            'Votre compte a été créé avec succès.',
+                                            Icons.check,
+                                            const Color(0xFF7FB77E),
+                                            //'/login'
+                                        );
+                                      } else if (state is LoginErrorState) {
+                                        // Navigator.pushNamed(context, '/profileInfo');
+                                        showValidationCredentials(
+                                            context,
+                                            'Erreur',
+                                            "Une erreur s'est produite",
+                                            Icons.error_outline,
+                                            const Color(0xFFF28F8F),
+                                            //'/login'
+                                        );
+                                      } else {
+                                        debugPrint('There is some exception error');
+                                      }
+                                    },
+                                  ),], child: const Text(''),),
 
                               const SizedBox(
                                 height: 10,
@@ -368,6 +402,16 @@ class _MySignupState extends State<MySignup> {
                 ),
               ),
             ),
+          ),
+          IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              size: 32,
+            ),
+            color: Colors.white,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
           ),
         ],
       ),
