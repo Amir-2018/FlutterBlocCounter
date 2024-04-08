@@ -19,6 +19,7 @@ import 'features/map_interactive/bloc/zone_bloc.dart';
 import 'features/map_interactive/bloc/zone_event.dart';
 import 'features/map_interactive/presentation/widgets/map.dart';
 import 'features/map_interactive/presentation/widgets/map_elements/map_home_page.dart';
+import 'features/map_interactive/presentation/widgets/map_elements/map_screen.dart';
 
 //https://github.com/matiasdev30/flutter_map_draw_route/tree/main/flutter_map_draw_route
 
@@ -47,7 +48,7 @@ class MyApp extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             debugPrint(snapshot.toString());
-            String initialRoute = (snapshot.hasData && snapshot.data != '') ? '/get_started' : '/get_started';
+            String initialRoute = (snapshot.hasData && snapshot.data != '') ? '/map' : '/map';
 
             return MaterialApp(
               title: 'Chotrana smart village',
@@ -66,6 +67,10 @@ class MyApp extends StatelessWidget {
                 // '/get_started': (context) => GetStartedApp(),
                 '/map': (context) => OpenStreetMapSearchAndPick(onPicked: (PickedData pickedData) {}),
                 '/get_started': (context) => BackgroundScreen(),
+                '/test': (context) => MapScreen(),
+
+
+
 
 
               },

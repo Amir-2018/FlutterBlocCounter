@@ -15,6 +15,7 @@ import 'package:pfechotranasmartvillage/features/map_interactive/bloc/zone_bloc.
 import 'package:pfechotranasmartvillage/features/map_interactive/bloc/zone_event.dart';
 import 'package:pfechotranasmartvillage/features/map_interactive/domain/repository/map_repository.dart';
 import 'package:pfechotranasmartvillage/features/map_interactive/presentation/widgets/map_elements/polylines.dart';
+import 'package:pfechotranasmartvillage/features/map_interactive/presentation/widgets/map_elements/search_bar.dart';
 import 'package:pfechotranasmartvillage/features/map_interactive/presentation/widgets/map_elements/wide_button.dart';
 
 import '../../../../../core/dependencies_injection.dart';
@@ -23,6 +24,8 @@ import '../../../../authentication/presentation/widgets/subwidgets/button_naviga
 import '../../../bloc/zone_state.dart';
 import '../../../data/implementation/map_repository_impl.dart';
 import '../button_sheet/bottom_sheet.dart';
+import 'custom_search_field.dart';
+import 'go_to_desired_position.dart';
 import 'markers.dart';
 class OpenStreetMapSearchAndPick extends StatefulWidget {
   final LatLong center;
@@ -84,11 +87,16 @@ class _OpenStreetMapSearchAndPickState
 
 
   MapController _mapController = MapController();
+
   final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController2 = TextEditingController();
+
   final FocusNode _focusNode = FocusNode();
-  List<OSMdata> _options = <OSMdata>[];
+
+  late List<OSMdata> _options = <OSMdata>[];
   Timer? _debounce;
   var client = http.Client();
+  late Future<Position?> latlongFuture;
 
   void setNameCurrentPos() async {
     double latitude = _mapController.center.latitude;
@@ -108,6 +116,8 @@ class _OpenStreetMapSearchAndPickState
     jsonDecode(utf8.decode(response.bodyBytes)) as Map<dynamic, dynamic>;
 
     _searchController.text =
+        decodedResponse['display_name'] ?? "MOVE TO CURRENT POSITION";
+    _searchController2.text =
         decodedResponse['display_name'] ?? "MOVE TO CURRENT POSITION";
     setState(() {});
   }
@@ -132,6 +142,8 @@ class _OpenStreetMapSearchAndPickState
 
     _searchController.text =
         decodedResponse['display_name'] ?? "MOVE TO CURRENT POSITION";
+    _searchController2.text =
+        decodedResponse['display_name'] ?? "MOVE TO CURRENT POSITION";
     setState(() {});
   }
 
@@ -153,6 +165,8 @@ class _OpenStreetMapSearchAndPickState
         as Map<dynamic, dynamic>;
 
         _searchController.text = decodedResponse['display_name'];
+        _searchController2.text = decodedResponse['display_name'];
+
         setState(() {});
       }
     });
@@ -168,7 +182,8 @@ class _OpenStreetMapSearchAndPickState
 
   @override
   Widget build(BuildContext context) {
-
+    var latL = [48.8945265,48.8832498,48.8583694,48.9352576];
+    var lonL = [2.2608798,2.2876141,2.2797794,2.3242512];
     initDependencies() ;
     // String? _autocompleteSelection;
     OutlineInputBorder inputBorder = OutlineInputBorder(
@@ -185,7 +200,6 @@ class _OpenStreetMapSearchAndPickState
               flex: 10,
               child: Stack(
                 children: [
-
                   Positioned.fill(
                       child: BlocBuilder<ZoneBloc, ZoneState>(
                         builder: (context, state) {
@@ -205,6 +219,7 @@ class _OpenStreetMapSearchAndPickState
                                 ),
                                 PolylineLayer(
                                   polylines: [
+
                                     Polyline(
                                       points: polylines,
                                       color: Colors.black,
@@ -261,7 +276,25 @@ class _OpenStreetMapSearchAndPickState
                                       SizedBox(height: 20.0),
                                             Row(
                                           children: [
-                                            const Expanded(child: Text('')),
+                                            SizedBox(width: 20,),
+
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+
+                                                },
+                                                style: ButtonStyle(
+                                                  backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF7FB77E)),
+                                                ),
+                                                child: const Text('OK',style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight: FontWeight.bold,
+
+                                                ),),
+                                              ),
+                                            ),
+
                                             Expanded(
                                               child: ElevatedButton(
                                                 onPressed: () {
@@ -270,13 +303,11 @@ class _OpenStreetMapSearchAndPickState
                                                 style: ButtonStyle(
                                                   backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF7FB77E)),
                                                 ),
-                                                child: const Text('OK',style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.bold
-                                                ),),
+                                                child:       Center(child: Icon(Icons.directions_outlined, color: Colors.white)), // Icône d'itinéraire
+
                                               ),
                                             ),
-                                            const Expanded(child: Text('')),
+
 
                                           ],
                                         ),
@@ -318,12 +349,25 @@ class _OpenStreetMapSearchAndPickState
                           }
                         },
                       )),
+                  SearchBarWidget(
+                    marginTop: 0,
+                    marginLeft: 0,
+                    marginRight: 0,
+                    hintText: 'Search...',
+                    baseUri: 'https://nominatim.openstreetmap.org',
+                    mapController: _mapController,
+                    searchController: _searchController,
+                    focusNode: _focusNode,
+                    options: _options,
+                    debounce: Timer(Duration(milliseconds: 2000), () {}),
+                  ),
                   Positioned.fill(
                       child: IgnorePointer(
                         child: Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
+
                               /*Text(widget.locationPinText,
                                   style: widget.locationPinTextStyle,
                                   textAlign: TextAlign.center),*/
@@ -339,37 +383,8 @@ class _OpenStreetMapSearchAndPickState
                           ),
                         ),
                       )),
-              /*    Positioned(
-                      bottom: 180,
-                      right: 5,
-                      child: FloatingActionButton(
-                        heroTag: 'btn1',
-                        backgroundColor: widget.buttonColor,
-                        onPressed: () {
-                          getIt<MapRepositoryImpl>().getZone();
-                          /*_mapController.move(
-                              _mapController.center, _mapController.zoom + 1);*/
-                        },
-                        child: Icon(
-                          widget.zoomInIcon,
-                          color: widget.buttonTextColor,
-                        ),
-                      )),*/
-                  /*Positioned(
-                      bottom: 120,
-                      right: 5,
-                      child: FloatingActionButton(
-                        heroTag: 'btn2',
-                        backgroundColor: widget.buttonColor,
-                        onPressed: () {
-                          _mapController.move(
-                              _mapController.center, _mapController.zoom - 1);
-                        },
-                        child: Icon(
-                          widget.zoomOutIcon,
-                          color: widget.buttonTextColor,
-                        ),
-                      )),*/
+
+
                   Positioned(
                     bottom: 60,
                     right: 5,
@@ -384,90 +399,9 @@ class _OpenStreetMapSearchAndPickState
                             backgroundColor: Colors.white,
                             shape: StadiumBorder(),
                             onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    content: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.end,
-                                          children: [
-                                            InkWell(
-                                              borderRadius: BorderRadius.circular(50),
-                                              onTap: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: Ink(
-                                                decoration: BoxDecoration(
-                                                  color: Color(0xFFFF928E),
-                                                  shape: BoxShape.circle,
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black.withOpacity(0.1),
-                                                      blurRadius: 4,
-                                                      offset: Offset(0, 2),
-                                                    ),
-                                                  ],
-                                                ),
-                                                child: Padding(
-                                                  padding: EdgeInsets.all(10),
-                                                  child: Icon(
-                                                    Icons.close,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const Padding(
-                                          padding:  EdgeInsets.all(8.0),
-                                          child: TextField(
-                                            decoration: InputDecoration(
-                                              hintText: 'Position actuelle',
-                                              border: OutlineInputBorder(),
-                                              prefixIcon: Icon(Icons.location_on),
-                                            ),
-                                          ),
-                                        ),
-                                        const Padding(
-                                          padding:  EdgeInsets.all(8.0),
-                                          child: TextField(
-                                            decoration: InputDecoration(
-                                              hintText: 'Chercher',
-                                              border: OutlineInputBorder(),
-                                              prefixIcon: Icon(Icons.search),
-                                            ),
-                                          ),
-                                        ),
-                                        Row(
-                                          children: [
-                                            const Expanded(child: Text('')),
-                                            Expanded(
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                                style: ButtonStyle(
-                                                  backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF7FB77E)),
-                                                ),
-                                                child: const Text('OK',style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold
-                                                ),),
-                                              ),
-                                            ),
-                                            const Expanded(child: Text('')),
-
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const GoToDesiredPosition(baseUri: 'https://nominatim.openstreetmap.org',)),
                               );
                             },
                             child: const Icon(
@@ -524,7 +458,6 @@ class _OpenStreetMapSearchAndPickState
                           ),
                         ),
                         SizedBox(height: 8),
-
                         SizedBox(
                           width: 65,
                           height: 65,
@@ -547,22 +480,9 @@ class _OpenStreetMapSearchAndPickState
                       ],
                     ),
                   ),
-                          /*try {
-                            LatLng position =
-                            await widget.onGetCurrentLocationPressed.call();
-                            _mapController.move(
-                                LatLng(position.latitude, position.longitude),
-                                _mapController.zoom);
-                          } catch (e) {
-                            _mapController.move(
-                                LatLng(widget.center.latitude, widget.center.longitude),
-                                _mapController.zoom);
-                          } finally {
-                            setNameCurrentPos();
-                          }*/
 
+                  /*Positioned(
 
-                  Positioned(
                     top: 0,
                     left: 0,
                     right: 0,
@@ -574,69 +494,64 @@ class _OpenStreetMapSearchAndPickState
                       ),
                       child: Column(
                         children: [
-                          TextField(
+                          TextFormField(
                               controller: _searchController,
                               focusNode: _focusNode,
-                        decoration: InputDecoration(
-
-                            hintText: widget.hintText,
-                            hintStyle: TextStyle(color: Color(0xFF8E8E93)),
-                            filled: true,
-                            fillColor: Colors.white,
-                            prefixIcon: Icon(Icons.search, color: Color(0xFF8E8E93)),
-                            contentPadding: EdgeInsets.all(16),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius: BorderRadius.circular(50),
-                            ),focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(20),
-
-
-                        ),),
-
+                              decoration: InputDecoration(
+                                hintText: widget.hintText,
+                                border: inputBorder,
+                                focusedBorder: inputFocusBorder,
+                              ),
                               onChanged: (String value) {
-                                if (_debounce?.isActive ?? false) _debounce?.cancel();
+                                if (_debounce?.isActive ?? false) {
+                                  _debounce?.cancel();
+                                }
 
-                                _debounce =
-                                    Timer(const Duration(milliseconds: 2000), () async {
-                                      if (kDebugMode) {
-                                        print(value);
-                                      }
-                                      var client = http.Client();
-                                      try {
-                                        String url =
-                                            '${widget.baseUri}/search?q=$value&format=json&polygon_geojson=1&addressdetails=1';
-                                        if (kDebugMode) {
-                                          print(url);
-                                        }
-                                        var response = await client.get(Uri.parse(url));
-                                        // var response = await client.post(Uri.parse(url));
-                                        var decodedResponse =
-                                        jsonDecode(utf8.decode(response.bodyBytes))
-                                        as List<dynamic>;
-                                        if (kDebugMode) {
-                                          print(decodedResponse);
-                                        }
-                                        _options = decodedResponse
-                                            .map((e) => OSMdata(
-                                            displayname: e['display_name'],
-                                            lat: double.parse(e['lat']),
-                                            lon: double.parse(e['lon'])))
-                                            .toList();
-                                        setState(() {});
-                                      } finally {
-                                        client.close();
-                                      }
+                                _debounce = Timer(
+                                    const Duration(milliseconds: 2000), () async {
+                                  if (kDebugMode) {
+                                    print(value);
+                                  }
+                                  var client = http.Client();
+                                  try {
+                                    String url =
+                                        '${widget.baseUri}/search?q=$value&format=json&polygon_geojson=1&addressdetails=1';
+                                    if (kDebugMode) {
+                                      print(url);
+                                    }
+                                    var response = await client.get(Uri.parse(url));
+                                    // var response = await client.post(Uri.parse(url));
+                                    var decodedResponse =
+                                    jsonDecode(utf8.decode(response.bodyBytes))
+                                    as List<dynamic>;
+                                    if (kDebugMode) {
+                                      print(decodedResponse);
+                                    }
+                                    _options = decodedResponse
+                                        .map(
+                                          (e) => OSMdata(
+                                        displayname: e['display_name'],
+                                        lat: double.parse(e['lat']),
+                                        lon: double.parse(e['lon']),
+                                      ),
+                                    )
+                                        .toList();
+                                    setState(() {});
+                                  } finally {
+                                    client.close();
+                                  }
 
-                                      setState(() {});
-                                    });
+                                  setState(() {});
+                                });
                               }),
-                          StatefulBuilder(builder: ((context, setState) {
-                            return ListView.builder(
+
+                          StatefulBuilder(
+                            builder: ((context, setState) {
+                              return ListView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
-                                itemCount: _options.length > 5 ? 5 : _options.length,
+                                itemCount:
+                                _options.length > 5 ? 5 : _options.length,
                                 itemBuilder: (context, index) {
                                   return ListTile(
                                     title: Text(_options[index].displayname),
@@ -644,8 +559,8 @@ class _OpenStreetMapSearchAndPickState
                                         '${_options[index].lat},${_options[index].lon}'),
                                     onTap: () {
                                       _mapController.move(
-                                          LatLng(
-                                              _options[index].lat, _options[index].lon),
+                                          LatLng(_options[index].lat,
+                                              _options[index].lon),
                                           15.0);
 
                                       _focusNode.unfocus();
@@ -653,36 +568,16 @@ class _OpenStreetMapSearchAndPickState
                                       setState(() {});
                                     },
                                   );
-                                });
-                          })),
+                                },
+                              );
+                            }),
+                          ),
                         ],
                       ),
                     ),
-                  ),
-                  /*Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: WideButton(
-                          text:
-                          widget.buttonText,
-                          textStyle: widget.buttonTextStyle,
-                          height: widget.buttonHeight,
-                          width: widget.buttonWidth,
-                          onPressed: () async {
-                            pickData().then((value) {
-                              widget.onPicked(value);
-                            });
-                          },
-                          backgroundColor: widget.buttonColor,
-                          foregroundColor: widget.buttonTextColor,
-                        ),
-                      ),
-                    ),
-                  )*/
+                  ),*/
+
+
                   Positioned(
                     top: 80,
                     right: 20,
@@ -755,6 +650,7 @@ class _OpenStreetMapSearchAndPickState
                       ],
                     ),
                   ),
+
                 ],
               ),
             ),

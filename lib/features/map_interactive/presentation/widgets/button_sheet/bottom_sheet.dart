@@ -50,10 +50,12 @@ IconData getIconForIndex(int index) {
     case 0:
       return Icons.factory;
     case 1:
-      return Icons.business;
+      return Icons.factory;
     case 2:
-      return Icons.school;
+      return Icons.business;
     case 3:
+      return Icons.school;
+    case 4:
       return Icons.mosque;
     default:
       return Icons.error;
@@ -63,12 +65,14 @@ IconData getIconForIndex(int index) {
 String getTitleForIndex(int index) {
   switch (index) {
     case 0:
-      return 'Industries';
+      return 'Tous';
     case 1:
-      return 'Entreprises';
+      return 'Industries';
     case 2:
-      return 'Universités';
+      return 'Entreprises';
     case 3:
+      return 'Universités';
+    case 4:
       return 'Mosquées';
     default:
       return 'Error';
