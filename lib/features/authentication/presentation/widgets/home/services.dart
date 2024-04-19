@@ -88,8 +88,8 @@ class _ServicesState extends State<Services> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
+                 Padding(
+                  padding:  EdgeInsets.all(8.0),
                   child: Text(
                     'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
                     'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. '
@@ -113,8 +113,8 @@ class _ServicesState extends State<Services> {
             ),
             flex: 10,
           ),
-          Expanded(
-            child: const ButtonNavigationBar(),
+          const Expanded(
+            child:  ButtonNavigationBar(),
             flex: 1,
           )
         ],

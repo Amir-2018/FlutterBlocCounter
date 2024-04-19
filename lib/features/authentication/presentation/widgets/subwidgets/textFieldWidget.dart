@@ -33,7 +33,7 @@ class TextFieldWidget extends StatelessWidget {
         style: const TextStyle(
           // Adding more style to the text
           fontSize: 16,
-          color: Color.fromARGB(255, 98, 91, 91),
+          color: Color(0xFF414141),
           fontWeight: FontWeight.bold,
         ),
         keyboardType: TextInputType.emailAddress,
@@ -49,7 +49,7 @@ class TextFieldWidget extends StatelessWidget {
           hintStyle: const TextStyle(
             // Adjusting hint text style
             fontSize: 14,
-            color: Color(0xFF7F7F7F),
+            color: Color(0xFF414141),
             fontWeight: FontWeight.bold,
           ),
           prefixIcon: iconPrefix != null
@@ -59,8 +59,7 @@ class TextFieldWidget extends StatelessWidget {
                   child: Icon(
                     // Use Icon widget directly for customization
                     iconPrefix!.icon,
-                    color: Colors
-                        .blue, // Set the desired color for the prefix icon
+                    color: Color(0xff7FB77E), // Set the desired color for the prefix icon
                   ),
                 )
               : null, // If iconPrefix is null, set prefixIcon to null
@@ -71,7 +70,7 @@ class TextFieldWidget extends StatelessWidget {
             // Customizing border when focused
             borderRadius: BorderRadius.circular(12),
             borderSide: const BorderSide(
-              color: Colors.blue, // Change the border color when focused
+              color: Colors.black38, // Change the border color when focused
               width: 2, // Change the border width when focused
             ),
           ),

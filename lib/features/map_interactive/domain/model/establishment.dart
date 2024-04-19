@@ -1,62 +1,82 @@
 import 'dart:async';
+import 'package:pfechotranasmartvillage/features/map_interactive/domain/model/point_location.dart';
 import 'package:pfechotranasmartvillage/features/map_interactive/domain/model/zone.dart';
+import 'package:pfechotranasmartvillage/features/map_interactive/domain/model/point_location.dart';
 
 import 'lot.dart';
+import 'contact.dart'; // Ajout de l'import manquant
 import 'package:latlong2/latlong.dart';
 
 class Establishment {
   final int? id;
   final String nom;
-  final String type;
-  final String tel;
-  final String fax;
-  final String contact;
-  final String surface;
   final List<Lot> lots;
-  final LatLng position;
-
+  final String telephone;
+  final String fax;
+  //final List<Contact> contacts;
+  final String categorie;
+  final String etablissementEnum;
+  final double surface;
+  final String lien;
+  final PointLocation position;
 
   const Establishment({
     this.id,
     required this.nom,
-    required this.type,
-    required this.tel,
-    required this.fax,
-    required this.contact,
-    required this.surface,
     required this.lots,
+    required this.telephone,
+    required this.fax,
+    //required this.contacts,
+    required this.categorie,
+    required this.etablissementEnum,
+    required this.surface,
+    required this.lien,
     required this.position,
-
   });
 
   factory Establishment.fromJson(Map<String, dynamic> json) {
     return Establishment(
       id: json['id'],
       nom: json['nom'],
-      type: json['type'],
-      tel: json['tel'],
+      telephone: json['telephone'],
       fax: json['fax'],
-      contact: json['contact'],
-      surface: json['surface'],
+      /*contacts: (json['contacts'] as List<dynamic>)
+          .map((contact) => Contact.fromJson(contact))
+          .toList(),*/
+      etablissementEnum: json['etablissementEnum'],
+      surface: json['surface'].toDouble(),
+      lien: json['lien'],
+      position: PointLocation(
+        lat: json['position']['lat'],
+        lng: json['position']['lng'],
+      ),
       lots: (json['lots'] as List<dynamic>)
           .map((lot) => Lot.fromJson(lot))
           .toList(),
-      position: LatLng(json['position'][0], json['position'][1]),
+      categorie: json['categorie'],
     );
   }
 
-  factory Establishment.fromMap(Map<dynamic, dynamic> map) {
+  factory Establishment.fromMap(Map<String, dynamic> map) {
     return Establishment(
       id: map['id'],
       nom: map['nom'],
-      type: map['type'],
-      tel: map['tel'],
+      telephone: map['telephone'],
       fax: map['fax'],
-      contact: map['contact'],
-      surface: map['surface'],
-      lots: map['lots'],
-      position : map['position'],
-
+     /* contacts: (map['contacts'] as List<dynamic>)
+          .map((contact) => Contact.fromMap(contact))
+          .toList(),*/
+      etablissementEnum: map['etablissementEnum'],
+      surface: map['surface'].toDouble(),
+      lien: map['lien'],
+      position: PointLocation(
+        lat: map['position']['lat'],
+        lng: map['position']['lng'],
+      ),
+      lots: (map['lots'] as List<dynamic>)
+          .map((lot) => Lot.fromMap(lot))
+          .toList(),
+      categorie: map['categorie'],
     );
   }
 
@@ -64,13 +84,18 @@ class Establishment {
     return {
       'id': id,
       'nom': nom,
-      'type': type,
-      'tel': tel,
+      'telephone': telephone,
       'fax': fax,
-      'contact': contact,
+      //'contacts': contacts.map((contact) => contact.toMap()).toList(),
+      'etablissementEnum': etablissementEnum,
       'surface': surface,
-      'lots': lots,
-      'position' : position,
+      'lien': lien,
+      'position': {
+        'lat': position.lat,
+        'lng': position.lng,
+      },
+      'lots': lots.map((lot) => lot.toMap()).toList(),
     };
   }
 }
+

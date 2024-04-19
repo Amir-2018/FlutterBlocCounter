@@ -37,7 +37,7 @@ class GetStartedApp extends StatelessWidget {
                               0), // Remove elevation
 
                           backgroundColor: MaterialStateProperty.all<Color>(
-                              Color(0xFF1F7774)),
+                            const Color(0xFF7FB77E),),
                           shape:
                               MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(

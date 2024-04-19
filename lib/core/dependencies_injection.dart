@@ -14,6 +14,7 @@ import '../features/authentication/presentation/widgets/signup/bloc/signup_bloc.
 import '../features/authentication/presentation/widgets/update/bloc/update_bloc.dart';
 import '../features/map_interactive/bloc/zone_bloc.dart';
 import '../features/map_interactive/domain/usecases/get_list_zone_usecase.dart';
+import '../features/map_interactive/presentation/widgets/map_elements/bloc_position/position_bloc.dart';
 
 final getIt = GetIt.instance;
 
@@ -56,6 +57,12 @@ void initDependencies() {
           () => ZoneBloc(GetZoneBounderiesUseCase(mapRepository: MapRepositoryImpl())),
     );
   }
+
+  if (!GetIt.I.isRegistered<PositionBloc>()) {
+    getIt.registerLazySingleton<PositionBloc>(() =>PositionBloc());
+  }
+
+
 
 }
 

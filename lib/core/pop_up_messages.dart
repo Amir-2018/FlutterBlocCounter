@@ -10,7 +10,7 @@ Future<bool> showValidationDialog(BuildContext context,IconData icon,String mess
           children: [
              Icon(
               icon,
-              color: const Color(0xFF1F7774),
+              color: const Color(0xFF7FB77E),
               size: 50.0,
             ),
             const SizedBox(height: 15.0),
@@ -18,7 +18,7 @@ Future<bool> showValidationDialog(BuildContext context,IconData icon,String mess
               message,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                color: Color(0xFF1F7774),
+                color: const Color(0xFF7FB77E),
                 fontSize: 16.0,
               ),
             ),
@@ -34,7 +34,7 @@ Future<bool> showValidationDialog(BuildContext context,IconData icon,String mess
                     Navigator.of(context).pop(true); // Return true when "oui" is clicked
                   },
                   style: TextButton.styleFrom(
-                    backgroundColor: const Color(0xFF1F7774), // Background color for "oui"
+                    backgroundColor:const Color(0xFF7FB77E), // Background color for "oui"
                     // primary: Colors.white, // Text color for "oui"
                   ),
                   child: Text(
@@ -78,7 +78,7 @@ void showValidationCredentials(BuildContext context, String title,
       return Dialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
-          side: BorderSide(color: const Color(0xFF1F7774), width: 2.0),
+          side: BorderSide(color: const Color(0xFF7FB77E), width: 2.0),
         ),
         backgroundColor: Colors.white,
         elevation: 5,
@@ -96,7 +96,7 @@ void showValidationCredentials(BuildContext context, String title,
               Text(
                 title,
                 style: const TextStyle(
-                  color: Color(0xFF1F7774),
+                  color:  Color(0xFF7FB77E),
                   fontWeight: FontWeight.bold,
                   fontSize: 18.0,
                 ),
@@ -106,7 +106,7 @@ void showValidationCredentials(BuildContext context, String title,
                 content,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  color: Color(0xFF1F7774),
+                  color:  Color(0xFF7FB77E),
                   fontSize: 16.0,
                 ),
               ),
@@ -116,7 +116,7 @@ void showValidationCredentials(BuildContext context, String title,
                   Navigator.of(context).pop();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1F7774),
+                  backgroundColor: Color(0xFF7FB77E),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),

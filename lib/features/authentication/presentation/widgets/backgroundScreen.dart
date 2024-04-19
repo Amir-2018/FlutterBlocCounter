@@ -2,17 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class BackgroundScreen extends StatelessWidget {
+  final List<String> imagePaths = [
+    'assets/screen1.svg',
+    'assets/screen2.svg',
+    'assets/screen3.svg',
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          PageView(
-            children: [
-              buildPage('assets/screen1.png'),
-              buildPage('assets/screen2.png'),
-              buildPage('assets/screen3.png'),
-            ],
+          PageView.builder(
+            itemCount: imagePaths.length,
+            itemBuilder: (context, index) {
+              return buildPage(imagePaths[index]);
+            },
           ),
           Positioned(
             left: 0,
@@ -21,7 +26,7 @@ class BackgroundScreen extends StatelessWidget {
             child: Center(
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/mode') ;
+                  Navigator.pushNamed(context, '/mode');
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF7FB77E)),
@@ -45,11 +50,10 @@ class BackgroundScreen extends StatelessWidget {
 
   Widget buildPage(String imagePath) {
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(imagePath),
-          fit: BoxFit.cover,
-        ),
+      child: SvgPicture.asset(
+        imagePath,
+        width: 500,
+        height: 500,
       ),
     );
   }

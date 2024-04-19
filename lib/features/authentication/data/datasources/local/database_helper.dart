@@ -10,7 +10,7 @@ class DatabaseHelper {
 
   Future<void> initializeDatabase() async {
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'my_database.db');
+    final path = join(dbPath, 'database.db');
 
     _database = await openDatabase(
       path,
@@ -28,7 +28,7 @@ class DatabaseHelper {
       throw Exception('Database not initialized');
     }
 
-    await _database!.insert('my_table', user.toMap());
+    await _database!.insert('user', user.toMap());
   }
 
   Future<List<User>> getUsers() async {
@@ -36,7 +36,7 @@ class DatabaseHelper {
       throw Exception('Database not initialized');
     }
 
-    final List<Map<String, dynamic>> maps = await _database!.query('my_table');
+    final List<Map<String, dynamic>> maps = await _database!.query('user');
     return List.generate(maps.length, (i) {
       return User(
         id: maps[i]['id'],

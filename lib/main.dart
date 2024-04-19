@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:pfechotranasmartvillage/features/authentication/bloc/user_bloc.dart';
+import 'package:pfechotranasmartvillage/features/map_interactive/presentation/widgets/map_elements/bloc_position/position_bloc.dart';
 import 'core/dependencies_injection.dart';
 import 'features/authentication/presentation/widgets/backgroundScreen.dart';
 import 'features/authentication/presentation/widgets/change_password/change_password.dart';
@@ -41,9 +42,13 @@ class MyApp extends StatelessWidget {
         BlocProvider<ZoneBloc>(
           create: (context) => getIt<ZoneBloc>()..add((GetZoneEvent())),
         ),
+
+        BlocProvider<PositionBloc>(
+          create: (context) => getIt<PositionBloc>()),
+
         // Add more BlocProviders if needed
       ],
-      child: FutureBuilder<String>(
+      child: FutureBuilder<String>(//
         future: storage.read(key: 'access_token').then((value) => value ?? ''),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
@@ -67,7 +72,7 @@ class MyApp extends StatelessWidget {
                 // '/get_started': (context) => GetStartedApp(),
                 '/map': (context) => OpenStreetMapSearchAndPick(onPicked: (PickedData pickedData) {}),
                 '/get_started': (context) => BackgroundScreen(),
-                '/test': (context) => MapScreen(),
+                //'/test': (context) =>   MapApp(),
 
 
 

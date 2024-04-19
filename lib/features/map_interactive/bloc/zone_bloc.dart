@@ -12,13 +12,14 @@ class ZoneBloc extends Bloc<ZoneEvent, ZoneState> {
       this.getZoneBounderiesUseCase,
       ) : super(ZoneInitialState()) {
     on<GetZoneEvent>((event, emit) async {
-      try {
+      try {//
         debugPrint('I will bring the map');
         final  zone = await getZoneBounderiesUseCase.call();
         debugPrint('User is ${zone.nom}');
+
         emit(ZoneSuccessState(zone));
       } catch (e) {
-        debugPrint('Erro with signup $e');
+        debugPrint('Exception with map bringing $e');
         emit(ZoneErrorState("Zone peut pas etre téléchargé "));
       }
     });

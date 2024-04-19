@@ -274,7 +274,7 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                                   'Échec de la connexion',
                                   'Veuillez vérifier votre connexion Internet et réessayer.',
                                   Icons.error_outline,
-                                  const Color(0xFF1F7774),
+                                  const Color(0xff7FB77E),
                                   //'/login'
                                 );                              } else {
                                 bool shouldUpdate = await showValidationDialog(context, Icons.check, 'Voulez-vous sauvegarder les changements?');
@@ -293,7 +293,7 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                                   ));
                                 }
                               }
-                            }, buttonContent: 'Enregistrer', colorButton: const Color(0xFF1F7774),),
+                            }, buttonContent: 'Enregistrer', colorButton: const Color(0xFF7FB77E),),
                           ),
                           const SizedBox(width: 16,),
                           SizedBox(
@@ -315,7 +315,7 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                                     'Les données ne sont pas modifiées',
                                     'erruer',
                                     Icons.error_outline,
-                                    const Color(0xFF1F7774),
+                                    const Color(0xff7FB77E),
                                     //'/login'
                                 );
                               } else if (state is UpdateSuccessState) {
@@ -353,7 +353,7 @@ class _TopPortion extends StatelessWidget {
               gradient: LinearGradient(
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
-                  colors: [Color(0xFF1F7774), Color(0xFF1F7774)]),
+                  colors: [Color(0xFF7FB77E), Color(0xFF7FB77E)]),
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(50),
                 bottomRight: Radius.circular(50),

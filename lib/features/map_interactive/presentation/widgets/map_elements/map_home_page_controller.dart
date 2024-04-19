@@ -129,36 +129,3 @@ void showEstablishmentDialog(BuildContext context, Establishment establishment) 
 }
 
 
-LatLng latLngFromPoint(PointLocation point) {
-  return LatLng(point.lat, point.lng);
-}
-
-List<PointLocation> latLngsToPoints(List<LatLng> latLngs) {
-  return latLngs.map((latLng) => PointLocation(lat: latLng.latitude, lng: latLng.longitude)).toList();
-}
-
-List<LatLng> pointsToLatLngs(List<PointLocation> points) {
-  return points.map((point) => LatLng(point.lat, point.lng)).toList();
-}
-Widget buildLocationWidget(IconData locationPinIcon) {
-  return Positioned.fill(
-    child: IgnorePointer(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Pink icon is here
-            Padding(
-              padding: const EdgeInsets.only(bottom: 200),
-              child: Icon(
-                locationPinIcon,
-                size: 50,
-                color: Colors.red,
-              ),
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
-}

@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
@@ -10,23 +9,21 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
-import 'package:pfechotranasmartvillage/features/authentication/data/implementation/user_repository_impl.dart';
+import 'package:osrm/osrm.dart';
 import 'package:pfechotranasmartvillage/features/map_interactive/bloc/zone_bloc.dart';
-import 'package:pfechotranasmartvillage/features/map_interactive/bloc/zone_event.dart';
-import 'package:pfechotranasmartvillage/features/map_interactive/domain/repository/map_repository.dart';
+import 'package:pfechotranasmartvillage/features/map_interactive/presentation/widgets/map_elements/markers.dart';
 import 'package:pfechotranasmartvillage/features/map_interactive/presentation/widgets/map_elements/polylines.dart';
 import 'package:pfechotranasmartvillage/features/map_interactive/presentation/widgets/map_elements/search_bar.dart';
-import 'package:pfechotranasmartvillage/features/map_interactive/presentation/widgets/map_elements/wide_button.dart';
-
 import '../../../../../core/dependencies_injection.dart';
 import '../../../../../main.dart';
 import '../../../../authentication/presentation/widgets/subwidgets/button_navigation_bar.dart';
 import '../../../bloc/zone_state.dart';
-import '../../../data/implementation/map_repository_impl.dart';
-import '../button_sheet/bottom_sheet.dart';
-import 'custom_search_field.dart';
+import '../../../domain/model/lot.dart';
+import 'bloc_position/position_bloc.dart';
+import 'bloc_position/position_state.dart';
 import 'go_to_desired_position.dart';
-import 'markers.dart';
+import 'package:pfechotranasmartvillage/features/map_interactive/domain/model/point_location.dart';
+
 class OpenStreetMapSearchAndPick extends StatefulWidget {
   final LatLong center;
   final void Function(PickedData pickedData) onPicked;
@@ -73,28 +70,22 @@ class OpenStreetMapSearchAndPick extends StatefulWidget {
         this.buttonHeight = 50,
         this.buttonWidth = 200,
         this.baseUri = 'https://nominatim.openstreetmap.org',
-        this.locationPinIcon = Icons.location_on})
+        this.locationPinIcon = Icons.location_on
+   })
       : super(key: key);
 
   @override
   State<OpenStreetMapSearchAndPick> createState() =>
       _OpenStreetMapSearchAndPickState();
 }
-
 class _OpenStreetMapSearchAndPickState
     extends State<OpenStreetMapSearchAndPick> {
-  List<int> _selectedCategories = [];
-
 
   MapController _mapController = MapController();
-
   final TextEditingController _searchController = TextEditingController();
   final TextEditingController _searchController2 = TextEditingController();
-
   final FocusNode _focusNode = FocusNode();
-
   late List<OSMdata> _options = <OSMdata>[];
-  Timer? _debounce;
   var client = http.Client();
   late Future<Position?> latlongFuture;
 
@@ -111,7 +102,6 @@ class _OpenStreetMapSearchAndPickState
         '${widget.baseUri}/reverse?format=json&lat=$latitude&lon=$longitude&zoom=18&addressdetails=1';
 
     var response = await client.get(Uri.parse(url));
-    // var response = await client.post(Uri.parse(url));
     var decodedResponse =
     jsonDecode(utf8.decode(response.bodyBytes)) as Map<dynamic, dynamic>;
 
@@ -136,7 +126,6 @@ class _OpenStreetMapSearchAndPickState
         '${widget.baseUri}/reverse?format=json&lat=$latitude&lon=$longitude&zoom=18&addressdetails=1';
 
     var response = await client.get(Uri.parse(url));
-    // var response = await client.post(Uri.parse(url));
     var decodedResponse =
     jsonDecode(utf8.decode(response.bodyBytes)) as Map<dynamic, dynamic>;
 
@@ -144,11 +133,24 @@ class _OpenStreetMapSearchAndPickState
         decodedResponse['display_name'] ?? "MOVE TO CURRENT POSITION";
     _searchController2.text =
         decodedResponse['display_name'] ?? "MOVE TO CURRENT POSITION";
-    setState(() {});
+    //setState(() {});
   }
+
+  double? zoomUp ;
+  LatLng? centerCamera ;
+  int clickCount = 0;
+  int clickCountSatellite = 0;
+
+  double strokeWidthZone = 0;
+  bool isFilledState = false;
+  bool currrent_location_visibility = false ;
+  String styleMap = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
 
   @override
   void initState() {
+     zoomUp = 15.5 ;//
+     zoomUp = 15.5 ;//
+     centerCamera = const LatLng(36.900264, 10.192354) ;
     _mapController = MapController();
 
     setNameCurrentPosAtInit();
@@ -160,7 +162,6 @@ class _OpenStreetMapSearchAndPickState
             '${widget.baseUri}/reverse?format=json&lat=${event.center.latitude}&lon=${event.center.longitude}&zoom=18&addressdetails=1';
 
         var response = await client.get(Uri.parse(url));
-        // var response = await client.post(Uri.parse(url));
         var decodedResponse = jsonDecode(utf8.decode(response.bodyBytes))
         as Map<dynamic, dynamic>;
 
@@ -173,19 +174,35 @@ class _OpenStreetMapSearchAndPickState
 
     super.initState();
   }
-
+  bool _isFirstContainerClicked = false;
   @override
   void dispose() {
     _mapController.dispose();
     super.dispose();
   }
+/****************************************/
+  late LatLng myPoint;
+  bool isLoading = false;
+
+  List<LatLng>  points = [];
+
+  PointLocation getCenter(PointLocation location1) {
+    return PointLocation(lat: location1.lat, lng: location1.lng);
+  }
+  /*List<Point> getLotPositions(List<Lot> lots) {
+    return lots.expand((lot) => lot.positions.expand((position) => [position]))
+        .map((position) => Point(lat: position.lat, lng: position.lng))
+        .toList();
+  }*/
+
+  Future<LatLng> getCurrentLocation() async {
+    final position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    return LatLng(position.latitude, position.longitude);
+  }
 
   @override
   Widget build(BuildContext context) {
-    var latL = [48.8945265,48.8832498,48.8583694,48.9352576];
-    var lonL = [2.2608798,2.2876141,2.2797794,2.3242512];
     initDependencies() ;
-    // String? _autocompleteSelection;
     OutlineInputBorder inputBorder = OutlineInputBorder(
       borderSide: BorderSide(color: widget.buttonColor),
     );
@@ -206,144 +223,199 @@ class _OpenStreetMapSearchAndPickState
                           if (state is ZoneSuccessState) {
                             return FlutterMap(
                               options: MapOptions(
-                                center: const LatLng(36.900415, 10.192256),
-                                zoom: 15.5,
-                                maxZoom: 18,
+                                bounds: LatLngBounds(const LatLng(36.903781, 10.190874),const LatLng(36.895888, 10.193448)),
+                                /*maxBounds: LatLngBounds(const LatLng(36.904314, 10.190799),const LatLng(36.895590, 10.193497
+
+                                )),*/
+                                center: centerCamera,
+                                zoom: zoomUp ?? 15.5,//
+                                maxZoom: 25,
                                 minZoom: 2,
                               ),
                               mapController: _mapController,
                               children: [
-                                TileLayer(
-                                  urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+
+                                TileLayer(//
+
+                                  urlTemplate: styleMap,
+                                  //https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png
+                                  // https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}
                                   subdomains: const ['a', 'b', 'c'],
                                 ),
-                                PolylineLayer(
-                                  polylines: [
 
-                                    Polyline(
-                                      points: polylines,
-                                      color: Colors.black,
-                                    ),
+                                BlocBuilder<PositionBloc, PositionState>(
+                                  builder: (context, state) {
+                                    final osrm = Osrm();
+
+                                    if (state is RoadState) {
+                                      final options = RouteRequest(
+                                        coordinates: [
+                                          (state.location1.lng, state.location1.lat),
+                                          (state.location2.lng, state.location2.lat),
+                                        ],
+                                      );
+
+                                      return FutureBuilder(
+                                        future: osrm.route(options),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState == ConnectionState.waiting) {
+                                            debugPrint('options are ${options.toString()}') ;
+                                            return CircularProgressIndicator(); // Show a loading indicator while fetching data
+                                          } else if (snapshot.hasError) {
+                                            return Text('Error: ${snapshot.error}'); // Show an error message if fetching data fails
+                                          } else {
+
+                                            List<Map<String, double>> road = snapshot.data!.routes.first.geometry!.lineString!.coordinates.map((e) {
+                                              markers.clear();
+                                                markers.add(
+                                                  Marker(
+                                                    width: 80.0,
+                                                    height: 80.0,
+                                                    point: latLngFromPoint(state.location1),
+                                                    builder: (context) => GestureDetector(
+                                                      child:  Column(
+                                                        children: [
+                                                          Container(
+                                                            width: 40.0,
+                                                            height: 40.0,
+                                                            decoration: BoxDecoration(
+                                                              color: Colors.white,
+                                                              boxShadow: [
+                                                                BoxShadow(
+                                                                  color: Colors.blue.withOpacity(0.4),
+                                                                  blurRadius: 5.0,
+                                                                  spreadRadius: 1.0,
+                                                                  offset: const Offset(0.0, 3.0),
+                                                                ),
+                                                              ],
+                                                              shape: BoxShape.circle,
+                                                            ),
+                                                            child: const Icon(
+                                                              Icons.circle,
+                                                              size: 30.0,
+                                                              color: Colors.green,
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                                );
+
+                                              markers.add(
+                                                Marker(
+                                                  width: 80.0,
+                                                  height: 80.0,
+                                                  point: latLngFromPoint(state.location2),
+                                                  builder: (context) => GestureDetector(
+                                                    child:  Column(
+                                                      children: [
+                                                        Container(
+                                                          width: 40.0,
+                                                          height: 40.0,
+                                                          decoration: BoxDecoration(
+                                                            color: Colors.white,
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color: Colors.black.withOpacity(0.2),
+                                                                blurRadius: 5.0,
+                                                                spreadRadius: 1.0,
+                                                                offset: const Offset(0.0, 3.0),
+                                                              ),
+                                                            ],
+                                                            shape: BoxShape.circle,
+                                                          ),
+                                                          child: const Icon(
+                                                            Icons.location_on,
+                                                            size: 30.0,
+                                                            color: Colors.green,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+
+                                              );
+
+
+                                              return e.toCoordinateMap();
+                                            }).toList();
+
+                                            List<LatLng> latLngList = road.map((e) => LatLng(e['lat']!, e['lng']!)).toList();
+                                            final polylineLayer = PolylineLayer(
+                                              polylines: [
+                                                Polyline(
+                                                  points: latLngList,
+                                                  color: Colors.red,
+                                                  strokeWidth: 4,
+                                                ),
+                                              ],
+                                            );
+                                            return Stack(
+                                              children: [
+                                                polylineLayer,
+                                                MarkerLayer(
+                                                  markers: markers,
+                                                ),
+                                              ],
+                                            );
+                                          }
+                                        },
+                                      );
+                                    }
+
+                                    return Container(); // Return a placeholder if the state is not a RoadState
+                                  },
+                                ),
+                                PolygonLayer(
+                                  polygons: [
+                                    drawPolygon(pointsToLatLngs(polylines),strokeWidthZone,isFilledState),
                                   ],
                                 ),
                                 MarkerLayer(
-                                  markers:[
-                                    Marker(
-                                      width: 30.0,
-                                      height: 30.0,
-                                      point: state.zone.establishment[0].position,
-                                      builder: (context) => GestureDetector(
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) => Dialog(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                child: Container(
-                                  padding: EdgeInsets.all(16.0),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                                    children: [
-                                      Text(
-                                        state.zone.establishment[0].nom,
-                                        style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                      SizedBox(height: 20.0),
-                                      ListTile(
-                                        leading: Icon(Icons.category),
-                                        title: Text('Type: ${state.zone.establishment[0].type}'),
-                                      ),
-                                      ListTile(
-                                        leading: Icon(Icons.phone),
-                                        title: Text('Tel: ${state.zone.establishment[0].tel}'),
-                                      ),
-                                      ListTile(
-                                        leading: Icon(Icons.print),
-                                        title: Text('Fax: ${state.zone.establishment[0].fax}'),
-                                      ),
-                                      ListTile(
-                                        leading: Icon(Icons.person),
-                                        title: Text('Contact: ${state.zone.establishment[0].contact}'),
-                                      ),
-                                      ListTile(
-                                        leading: Icon(Icons.square_foot),
-                                        title: Text('Surface: ${state.zone.establishment[0].surface}'),
-                                      ),
-                                      // Add more information as needed
-                                      SizedBox(height: 20.0),
-                                            Row(
-                                          children: [
-                                            SizedBox(width: 20,),
-
-                                            Expanded(
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-
-                                                },
-                                                style: ButtonStyle(
-                                                  backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF7FB77E)),
+                                  markers: [
+                                    for (int i = 0; i < state.zone.etablissements.length; i++)
+                                      Marker(
+                                        width: 30.0,
+                                        height: 30.0,
+                                        point: latLngFromPoint(state.zone.etablissements[i].position),
+                                        //
+                                        builder: (context) => GestureDetector(
+                                          onTap: () {
+                                            showEstablishmentDialog(context, state.zone.etablissements[i]);
+                                          },
+                                          child: SizedBox(
+                                            width : 100,height : 100,
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                const Expanded(
+                                                  child:  Icon(
+                                                    Icons.location_on,
+                                                    size: 45,
+                                                    color: Colors.red,
+                                                  ),
                                                 ),
-                                                child: const Text('OK',style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontWeight: FontWeight.bold,
 
-                                                ),),
-                                              ),
+                                              ],
                                             ),
-
-                                            Expanded(
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                                style: ButtonStyle(
-                                                  backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF7FB77E)),
-                                                ),
-                                                child:       Center(child: Icon(Icons.directions_outlined, color: Colors.white)), // Icône d'itinéraire
-
-                                              ),
-                                            ),
-
-
-                                          ],
-                                        ),
-
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                                        child: Column(
-                                          children: [
-                                            Icon(
-                                              Icons.location_on,
-                                              size: 30.0,
-                                              color: Colors.red,
-                                            ),
-                                           /* Text(
-                                              state.zone.establishment[0].nom,
-                                              style: TextStyle(fontSize: 12.0, color: Colors.black),
-                                            ),*/
-                                          ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ]
+                                  ],
                                 ),
+
                               ],
                             );
                           } else if (state is ZoneErrorState) {
                             return Center(
-                              child: Text(state.errormessage),
+                              child: Text("amieee ${state.errormessage}"),
                             );
                           } else {
                             // Handle other states if needed
-                            return Center(
+                            return const Center(
                               child: CircularProgressIndicator(),
                             );
                           }
@@ -361,24 +433,42 @@ class _OpenStreetMapSearchAndPickState
                     options: _options,
                     debounce: Timer(Duration(milliseconds: 2000), () {}),
                   ),
-                  Positioned.fill(
+                   Positioned.fill(
                       child: IgnorePointer(
                         child: Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
 
-                              /*Text(widget.locationPinText,
+                             /* Text(widget.locationPinText,
                                   style: widget.locationPinTextStyle,
                                   textAlign: TextAlign.center),*/
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 50),
-                                child: Icon(
-                                  widget.locationPinIcon,
-                                  size: 50,
-                                  color: widget.locationPinIconColor,
-                                ),
+                              // Pink icon is here
+                          Padding(
+                          padding: const EdgeInsets.only(bottom: 50),
+                          child: Visibility(
+                            visible: currrent_location_visibility,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 5,
+                                    blurRadius: 7,
+                                    offset: Offset(0, 3),
+                                  ),
+                                ],
                               ),
+                              child: Icon(
+                                widget.currentLocationIcon,
+                                size: 40,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ),
+                        ),
                             ],
                           ),
                         ),
@@ -419,20 +509,27 @@ class _OpenStreetMapSearchAndPickState
                                    _mapController.center, _mapController.zoom + 1);
                              },
                              child: Container(
-                              width: 48,
-                              height: 48,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.rectangle,
-                                borderRadius: BorderRadius.all(Radius.circular(10)),
-                                color: Colors.white,
-                              ),
-
-                                child: const Icon(
-                                  Icons.add,
-                                  color: Color(0xFF8E8E93),
-                                  size: 30,
-                                ),
-                              ),
+                               width: 48,
+                               height: 48,
+                               decoration: BoxDecoration(
+                                 shape: BoxShape.rectangle,
+                                 borderRadius: BorderRadius.all(Radius.circular(10)),
+                                 color: Colors.white,
+                                 boxShadow: [
+                                   BoxShadow(
+                                     color: Colors.grey.withOpacity(0.5),
+                                     spreadRadius: 2,
+                                     blurRadius: 5,
+                                     offset: Offset(0, 2), // changes the position of the shadow
+                                   ),
+                                 ],
+                               ),
+                               child: const Icon(
+                                 Icons.add,
+                                 color: Color(0xFF8E8E93),
+                                 size: 30,
+                               ),
+                             ),
                            ),
 
                         const SizedBox(height: 8),
@@ -444,12 +541,19 @@ class _OpenStreetMapSearchAndPickState
                           child: Container(
                             width: 48,
                             height: 48,
-                            decoration: const BoxDecoration(
+                            decoration: BoxDecoration(
                               shape: BoxShape.rectangle,
                               borderRadius: BorderRadius.all(Radius.circular(10)),
                               color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 2), // changes the position of the shadow
+                                ),
+                              ],
                             ),
-
                             child: const Icon(
                               Icons.remove,
                               color: Color(0xFF8E8E93),
@@ -468,6 +572,9 @@ class _OpenStreetMapSearchAndPickState
                             onPressed: () async {
                               Position position = await determinePosition();
                               _mapController.move(LatLng(position.latitude, position.longitude), 12);
+                              setState(() {
+                                currrent_location_visibility = true ;
+                              });
                               //getIt<MapRepositoryImpl>().getZone();
                             },
                             child: Icon(
@@ -481,170 +588,155 @@ class _OpenStreetMapSearchAndPickState
                     ),
                   ),
 
-                  /*Positioned(
-
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    child: Container(
-                      margin: const EdgeInsets.all(15),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: Column(
-                        children: [
-                          TextFormField(
-                              controller: _searchController,
-                              focusNode: _focusNode,
-                              decoration: InputDecoration(
-                                hintText: widget.hintText,
-                                border: inputBorder,
-                                focusedBorder: inputFocusBorder,
-                              ),
-                              onChanged: (String value) {
-                                if (_debounce?.isActive ?? false) {
-                                  _debounce?.cancel();
-                                }
-
-                                _debounce = Timer(
-                                    const Duration(milliseconds: 2000), () async {
-                                  if (kDebugMode) {
-                                    print(value);
-                                  }
-                                  var client = http.Client();
-                                  try {
-                                    String url =
-                                        '${widget.baseUri}/search?q=$value&format=json&polygon_geojson=1&addressdetails=1';
-                                    if (kDebugMode) {
-                                      print(url);
-                                    }
-                                    var response = await client.get(Uri.parse(url));
-                                    // var response = await client.post(Uri.parse(url));
-                                    var decodedResponse =
-                                    jsonDecode(utf8.decode(response.bodyBytes))
-                                    as List<dynamic>;
-                                    if (kDebugMode) {
-                                      print(decodedResponse);
-                                    }
-                                    _options = decodedResponse
-                                        .map(
-                                          (e) => OSMdata(
-                                        displayname: e['display_name'],
-                                        lat: double.parse(e['lat']),
-                                        lon: double.parse(e['lon']),
-                                      ),
-                                    )
-                                        .toList();
-                                    setState(() {});
-                                  } finally {
-                                    client.close();
-                                  }
-
-                                  setState(() {});
-                                });
-                              }),
-
-                          StatefulBuilder(
-                            builder: ((context, setState) {
-                              return ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount:
-                                _options.length > 5 ? 5 : _options.length,
-                                itemBuilder: (context, index) {
-                                  return ListTile(
-                                    title: Text(_options[index].displayname),
-                                    subtitle: Text(
-                                        '${_options[index].lat},${_options[index].lon}'),
-                                    onTap: () {
-                                      _mapController.move(
-                                          LatLng(_options[index].lat,
-                                              _options[index].lon),
-                                          15.0);
-
-                                      _focusNode.unfocus();
-                                      _options.clear();
-                                      setState(() {});
-                                    },
-                                  );
-                                },
-                              );
-                            }),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),*/
-
-
                   Positioned(
                     top: 80,
                     right: 20,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Container(
-                          width: 48,
-                          height: 48,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            color:  Color(0xFF7FB77E),
-
-                          ),
-                          child: const Icon(
-                            Icons.arrow_drop_down,
-                            color: Colors.white,
-                            size: 45,
-                          ),
-                        ),
-                        const SizedBox(height: 8,),
-                    GestureDetector(
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return buildBottomSheet(context, _selectedCategories, (int index, bool value) {
-                              setState(() {
-                                if (value) {
-                                  _selectedCategories.add(index);
-                                } else {
-                                  _selectedCategories.remove(index);
-                                }
-                              });
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _isFirstContainerClicked = !_isFirstContainerClicked;
                             });
                           },
-                        );
-                      },
-                      child: Container(
-                        width: 48,
-                        height: 48,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          color: Colors.white,
-                        ),
-                        child: const Icon(
-                          Icons.filter_list_alt,
-                          color: Color(0xFF8E8E93),
-                          size: 30,
-                        ),
-                      ),
-                    ),
-                        const SizedBox(height: 8,),
-                        Container(
-                          width: 48,
-                          height: 48,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            color: Colors.white,
+                          child: Container(
+
+                            width: 48,
+                            height: 48,
+                            decoration:  BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 2), // changes the position of the shadow
+                                ),
+                              ],
+                              color: Color(0xFF7FB77E),
+                            ),
+                            child: const Icon(
+                              Icons.arrow_drop_down,
+                              color: Colors.white,
+                              size: 45,
+                            ),
                           ),
-                          child: const Icon(
-                            Icons.border_all_outlined,
-                            color: Color(0xFF8E8E93),
-                            size: 30,
+                        ),
+                        Visibility(
+                          visible: _isFirstContainerClicked,
+                          child: const SizedBox(height: 8,),
+                        ),
+                        Visibility(
+                          visible: _isFirstContainerClicked,
+                          child: Container(
+                            width: 48,
+                            height: 48,
+                            decoration:  BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 2), // changes the position of the shadow
+                                ),
+                              ],
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                              color: Colors.white,
+                            ),
+                            child: const Icon(
+                              Icons.filter_list_alt,
+                              color: Color(0xFF8E8E93),
+                              size: 30,
+                            ),
+                          ),
+                        ),
+                        Visibility(
+                          visible: _isFirstContainerClicked,
+                          child: const SizedBox(height: 8,),
+                        ),
+                        Visibility(
+                          visible: _isFirstContainerClicked,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                if (clickCount % 2 == 0) {
+                                  strokeWidthZone = 4;
+                                  isFilledState = true;
+                                  //styleMap = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" ;
+                                } else {
+                                  strokeWidthZone = 0;
+                                  isFilledState = false;//
+                                }
+                                clickCount++;
+                              });
+                            },                            child: Container(
+
+                              width: 48,
+                              height: 48,
+                              decoration:  BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 2,
+                                    blurRadius: 5,
+                                    offset: Offset(0, 2), // changes the position of the shadow
+                                  ),
+                                ],
+                                shape: BoxShape.rectangle,
+                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                                color: Colors.white,
+                              ),
+                              child: const Icon(
+                                Icons.border_all_outlined,
+                                color: Color(0xFF8E8E93),
+                                size: 30,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 8,),
+                        Visibility(
+                          visible: _isFirstContainerClicked,//
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                if (clickCountSatellite % 2 == 0) {
+                                  // strokeWidthZone = 2;
+                                  // isFilledState = true;
+                                  styleMap = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" ;
+                                } else {
+                                  strokeWidthZone = 0;
+                                  isFilledState = false;
+                                  styleMap = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" ;
+                                }
+                                clickCountSatellite++;
+                              });
+                            },                            child: Container(
+
+                            width: 48,
+                            height: 48,
+                            decoration:  BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 2,
+                                  blurRadius: 5,
+                                  offset: Offset(0, 2), // changes the position of the shadow
+                                ),
+                              ],
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                              color: Colors.white,
+                            ),
+                            child: const Icon(
+                              Icons.satellite_alt_outlined,
+                              color: Color(0xFF8E8E93),
+                              size: 30,
+                            ),
+                          ),
                           ),
                         ),
                       ],
@@ -654,10 +746,10 @@ class _OpenStreetMapSearchAndPickState
                 ],
               ),
             ),
-            Expanded(
+            const Expanded(
               flex: 1,
-              child:   const ButtonNavigationBar(),
-    )
+              child:    ButtonNavigationBar(),
+            )
           ],
         ),
       ),

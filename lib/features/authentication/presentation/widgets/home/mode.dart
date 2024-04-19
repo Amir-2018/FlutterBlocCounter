@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+
 class Mode extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       body: Stack(
         children: [
           PageView(
             children: [
-              buildPage('assets/mode.png'),
+              buildPage('assets/screen4.svg', size),
             ],
           ),
           Positioned(
@@ -61,13 +65,13 @@ class Mode extends StatelessWidget {
     );
   }
 
-  Widget buildPage(String imagePath) {
+  Widget buildPage(String imagePath, Size size) {
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(imagePath),
-          fit: BoxFit.cover,
-        ),
+      child: SvgPicture.asset(
+        imagePath,
+        width: size.width,
+        height: size.height,
+        fit: BoxFit.cover,
       ),
     );
   }

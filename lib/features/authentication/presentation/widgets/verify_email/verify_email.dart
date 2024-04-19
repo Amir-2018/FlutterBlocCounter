@@ -53,7 +53,7 @@ class _VerifyEmailState extends State<Login> {
         children: [
           Container(
 
-              color: const Color(0xFF1F7774),
+              color: const Color(0xff7FB77E),
               constraints: const BoxConstraints.expand()),
           Positioned(
             bottom: 0.0,
@@ -72,7 +72,7 @@ class _VerifyEmailState extends State<Login> {
                   key: _formKey,
                   child: Stack(children: [
                     Container(
-                      color: const Color(0xFF1F7774),
+                      color: const Color(0xff7FB77E),
                     ),
                     Column(
                       children: [
@@ -106,7 +106,7 @@ class _VerifyEmailState extends State<Login> {
                                 style: TextStyle(
                                     fontSize: 25,
                                     fontWeight: FontWeight.bold,
-                                    color: Color(0xFF1F7774)),
+                                    color:  Color(0xff7FB77E),),
                               ),
                               const SizedBox(
                                 height: 15,
@@ -142,7 +142,7 @@ class _VerifyEmailState extends State<Login> {
                                   'Échec de la connexion',
                                   'Veuillez vérifier votre connexion Internet et réessayer.',
                                   Icons.error_outline,
-                                  const Color(0xFF1F7774),
+                                    const Color(0xff7FB77E),
                                   //'/login'
                                 );                              }else{
                                 Navigator.pushNamed(context, '/changePassword');

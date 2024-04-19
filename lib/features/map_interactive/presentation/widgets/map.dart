@@ -6,7 +6,7 @@ import 'package:latlong2/latlong.dart';
 import 'map_elements/map_home_page.dart';
 import 'map_elements/markers.dart';
 
-/*class MapWidget extends StatefulWidget {
+class MapWidget extends StatefulWidget {
   final Future<Position> Function() determinePosition;
   const MapWidget({required this.determinePosition});
   @override
@@ -27,7 +27,7 @@ class _MapWidgetState extends State<MapWidget> {
     return Scaffold(
       body:OpenStreetMapSearchAndPick(onPicked: (PickedData pickedData) {  },));
   }
-}*/
+}
 
 /*_map(context),
       floatingActionButton: FloatingActionButton(

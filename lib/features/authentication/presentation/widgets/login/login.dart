@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import '../../../../../core/connection_management.dart';
 import '../../../../../core/dependencies_injection.dart';
 import '../../../../../core/pop_up_messages.dart';
@@ -85,8 +86,8 @@ class _LoginState extends State<Login> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             //crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              const Image(
-                                  image: AssetImage('assets/login_image.png')),
+                               Container(
+                                  child: SvgPicture.asset('assets/login_image.svg')),
                               const SizedBox(
                                 height: 30,
                               ),
@@ -117,7 +118,7 @@ class _LoginState extends State<Login> {
                                   controller: usernameController,
                                   isTextObscure: false,
                                   placeholder: "Nom d'utilisateur",
-                                  iconPrefix: const Icon(Icons.person_outlined),
+                                  iconPrefix: const Icon(Icons.person_outlined,color: Colors.black38,),
                                   colorInputField: const Color(0xFFD9D9D9)),
                               TextFieldWidget(
                                   validator: (value) {
@@ -133,7 +134,7 @@ class _LoginState extends State<Login> {
                                   controller: passwordController,
                                   isTextObscure: true,
                                   placeholder: 'Mot de passe',
-                                  iconPrefix: const Icon(Icons.lock_outline),
+                                  iconPrefix: const Icon(Icons.lock_outline,color: Colors.black38),
                                   colorInputField: const Color(0xFFD9D9D9)),
                               GestureDetector(
                                 onTap: () async {

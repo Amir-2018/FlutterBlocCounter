@@ -55,7 +55,7 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
       body: Stack(
         children: [
           Container(
-              color: const Color(0xFF1F7774),
+              color: const Color(0xff7FB77E),
               //.withOpacity(0.7), // Adjust color and opacity as needed
               constraints: const BoxConstraints.expand()),
           Positioned(
@@ -75,7 +75,7 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
                   key: _formKey,
                   child: Stack(children: [
                     Container(
-                      color: const Color(0xFF1F7774),
+                      color: const Color(0xff7FB77E),
                     ),
                     Column(
                       children: [
@@ -109,7 +109,7 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
                                 style: TextStyle(
                                     fontSize: 25,
                                     fontWeight: FontWeight.bold,
-                                    color: Color(0xFF1F7774)),
+                                    color:  Color(0xff7FB77E),),
                               ),
                               const SizedBox(
                                 height: 15,

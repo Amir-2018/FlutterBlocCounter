@@ -1,10 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pfechotranasmartvillage/features/authentication/bloc/user_bloc.dart';
-import '../../../../../core/dependencies_injection.dart';
 import '../../../../../core/pop_up_messages.dart';
 import '../../../bloc/user_event.dart';
-import '../login/bloc/login_bloc.dart';
 
 class ButtonNavigationBar extends StatefulWidget {
   const ButtonNavigationBar({Key? key}) : super(key: key);
@@ -20,8 +19,9 @@ class _SimpleBottomNavigationState extends State<ButtonNavigationBar> {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
+
       currentIndex: _selectedIndex,
-      selectedItemColor: const Color(0xFF1F7774),
+      selectedItemColor: const Color(0xFF7FB77E),
       unselectedItemColor: const Color(0xff757575),
       type: _bottomNavType,
       onTap: (index) {
@@ -29,7 +29,9 @@ class _SimpleBottomNavigationState extends State<ButtonNavigationBar> {
           Navigator.pushNamed(context, '/profileInfo');
         } else if (index == 1) {
           Navigator.pushNamed(context, '/map');
-        }else if (index == 3) {
+
+
+        } else if (index == 4) {
           showMenu(context);
         }
         setState(() {
@@ -55,7 +57,6 @@ class _SimpleBottomNavigationState extends State<ButtonNavigationBar> {
               leading: const Icon(Icons.exit_to_app),
               title: const Text('Déconnexion'),
               onTap: () async {
-                //Navigator.pop(context);
                 bool shouldUpdate = await showValidationDialog(context, Icons.lock_outline, 'Voulez-vous vous déconnecter?');
                 if (shouldUpdate) {
                   BlocProvider.of<UserBloc>(context).add(LogOutEvent());
@@ -69,18 +70,23 @@ class _SimpleBottomNavigationState extends State<ButtonNavigationBar> {
     );
   }
 }
+//Icon selectedIcon = Icon(Icons.home_rounded);
 
 final _navBarItems = [
-  BottomNavigationBarItem(
+
+  const BottomNavigationBarItem(
     icon: Icon(Icons.home_outlined),
     activeIcon: Icon(Icons.home_rounded),
-    label: 'Home',
+    label: 'Accuiel',
   ),
-  BottomNavigationBarItem(
-    icon: Icon(Icons.map),
+
+  const BottomNavigationBarItem(
+    icon: Icon(Icons.location_on_outlined),
+    activeIcon: Icon(Icons.location_on_rounded),
+
     label: 'Map',
   ),
-  BottomNavigationBarItem(
+  const BottomNavigationBarItem(
     icon: Image(
       image: AssetImage('assets/proile_picture.png'),
       width: 33,
@@ -88,12 +94,12 @@ final _navBarItems = [
     ),
     label: 'Profile',
   ),
-  BottomNavigationBarItem(
+  const BottomNavigationBarItem(
     icon: Icon(Icons.notifications_outlined),
     activeIcon: Icon(Icons.notifications),
     label: 'Notifications',
   ),
-  BottomNavigationBarItem(
+  const BottomNavigationBarItem(
     icon: Icon(Icons.menu),
     label: 'Plus',
   ),
