@@ -12,10 +12,11 @@ class ZoneBloc extends Bloc<ZoneEvent, ZoneState> {
       this.getZoneBounderiesUseCase,
       ) : super(ZoneInitialState()) {
     on<GetZoneEvent>((event, emit) async {
+      print('I will get the zone') ;
       try {//
-        debugPrint('I will bring the map');
+        debugPrint('I will bring the zone');
         final  zone = await getZoneBounderiesUseCase.call();
-        debugPrint('User is ${zone.nom}');
+        debugPrint('zone amir is ${zone.bordures}');
 
         emit(ZoneSuccessState(zone));
       } catch (e) {

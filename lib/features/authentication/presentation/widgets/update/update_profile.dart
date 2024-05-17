@@ -274,10 +274,16 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                                   'Échec de la connexion',
                                   'Veuillez vérifier votre connexion Internet et réessayer.',
                                   Icons.error_outline,
-                                  const Color(0xff7FB77E),
+                                  const Color(0xFFFF0000),
+                                  const Color(0xFF414141),
+                                  const Color(0xFF414141),
+                                  const Color(0xFF1F7774),null
                                   //'/login'
                                 );                              } else {
-                                bool shouldUpdate = await showValidationDialog(context, Icons.check, 'Voulez-vous sauvegarder les changements?');
+                                bool shouldUpdate = await showValidationDialog(context, Icons.check, 'Voulez-vous sauvegarder les changements?',
+                                const Color(0xff1F7774), const Color(0xff414141), const Color(0xff1F7774), const Color(0xffF28F8F)
+
+                                );
                                 if (shouldUpdate) {
                                   BlocProvider.of<UpdateBloc>(context).add(UpdateUserEvent(
                                     fullNameController.text,
@@ -315,8 +321,12 @@ class _UpdateWidgetState extends State<UpdateWidget> {
                                     'Les données ne sont pas modifiées',
                                     'erruer',
                                     Icons.error_outline,
-                                    const Color(0xff7FB77E),
-                                    //'/login'
+                                  const Color(0xFFFF0000),
+                                  const Color(0xFF414141),
+                                  const Color(0xFF414141),
+                                  const Color(0xFF1F7774),null
+
+                                  //'/login'
                                 );
                               } else if (state is UpdateSuccessState) {
                                 Navigator.pushNamed(context, '/profileInfo');

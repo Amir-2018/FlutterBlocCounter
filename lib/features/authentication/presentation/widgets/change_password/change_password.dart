@@ -160,7 +160,10 @@ class _ChangePasswordWidgetState extends State<ChangePasswordWidget> {
                                   'Échec de la connexion',
                                   'Veuillez vérifier votre connexion Internet et réessayer.',
                                   Icons.error_outline,
-                                  const Color(0xFF1F7774),
+                                  const Color(0xFFFC5A5A),
+                                  const Color(0xFFF28F8F),
+                                  const Color(0xFF7FB77E),
+                                  const Color(0xFFF28F8F),null
                                   //'/login'
                                 );                              }else{
                                 Navigator.pushNamed(context, '/changePassword');

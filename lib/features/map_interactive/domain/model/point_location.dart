@@ -18,8 +18,8 @@ class PointLocation {
 
   factory PointLocation.fromMap(Map<String, dynamic> map) {
     return PointLocation(
-      lat: map['lat'].toDouble(),
-      lng: map['lng'].toDouble(),
+      lat: map['lat'],
+      lng: map['lng'],
     );
   }
 
@@ -43,4 +43,7 @@ class PointLocation {
       'lng': lng,
     };
   }
+
+
+
 }

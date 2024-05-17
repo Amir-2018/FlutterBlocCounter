@@ -271,7 +271,12 @@ class _MySignupState extends State<MySignup> {
                                       'Échec de la connexion',
                                       'Veuillez vérifier votre connexion Internet et réessayer.',
                                       Icons.error_outline,
-                                      const Color(0xFF1F7774),
+                                      const Color(0xFFFF0000),
+                                      const Color(0xFF414141),
+                                      const Color(0xFF414141),
+                                      const Color(0xFF1F7774),''
+
+
                                       //'/login'
                                     );                                  } else {
                                     if ((_formKey.currentState!).validate()) {
@@ -338,8 +343,13 @@ class _MySignupState extends State<MySignup> {
                                             'Félicitation',
                                             'Votre compte a été créé avec succès.',
                                             Icons.check,
-                                            const Color(0xFF7FB77E),
-                                            //'/login'
+                                          const Color(0xFF1F7774),
+                                          const Color(0xFF414141),
+                                          const Color(0xFF414141),
+                                          const Color(0xFF1F7774),null
+
+
+                                          //'/login'
                                         );
                                       } else if (state is LoginErrorState) {
                                         // Navigator.pushNamed(context, '/profileInfo');
@@ -348,8 +358,12 @@ class _MySignupState extends State<MySignup> {
                                             'Erreur',
                                             "Une erreur s'est produite",
                                             Icons.error_outline,
-                                            const Color(0xFFF28F8F),
-                                            //'/login'
+                                          const Color(0xFFFC5A5A),
+                                          const Color(0xFFF28F8F),
+                                          const Color(0xFF7FB77E),
+                                          const Color(0xFF7FB77E),null
+
+                                          //'/login'
                                         );
                                       } else {
                                         debugPrint('There is some exception error');

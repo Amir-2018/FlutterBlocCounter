@@ -1,172 +1,215 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pfechotranasmartvillage/features/authentication/presentation/widgets/home/search_services.dart';
+import '../../../../../core/dependencies_injection.dart';
+import '../../../../../core/widgets/list_annonces_widget.dart';
+import '../../../../annonces/presentation/actaulitie/bloc/actualite_bloc.dart';
+import '../../../../annonces/presentation/list_annonce/list_annonce.dart';
+import '../../../../carouselSlides.dart';
 import '../subwidgets/button_navigation_bar.dart';
 
 class Services extends StatefulWidget {
   @override
-  _ServicesState createState() => _ServicesState();
+   createState() => _ServicesState();
 }
-
 class _ServicesState extends State<Services> {
-  PageController _pageController = PageController(initialPage: 0);
-  int _currentPage = 0;
-
-  List<String> _imageUrls = [
-    "assets/car.jpg",
-    "assets/chotrana.png",
-    "assets/news.jpg",
-  ];
 
   List<Map<String, dynamic>> _services = [
     {
       "icon": Icons.map_outlined,
-      "title": "Map",
-    },
-    {"icon": Icons.newspaper_outlined, "title": "Actualités"},
-    {"icon": Icons.local_convenience_store_rounded, "title": "Conventions"},
-    {"icon": Icons.directions_car, "title": "covoiturage"},
-    {"icon": Icons.report_outlined, "title": "Réclamations"},
-    {"icon": Icons.event, "title": "Evenements"},
+      "title": "Vente & Achat",
+      "image": "assets/venteAchat/sale.png",
+      "link": "/listVentes"
+},
+    {"icon": Icons.newspaper_outlined, "title": "Map", "image": "assets/googlemaps.png","link" : "/map"},
+    {"icon": Icons.local_convenience_store_rounded, "title": "Conventions", "image": "assets/agreement.png","link" : ""},
+    {"icon": Icons.directions_car, "title": "covoiturage", "image": "assets/carService.png","link" : "/listCovoiturages"},
+    {"icon": Icons.report_outlined, "title": "Réclamations", "image": "assets/claim.png","link" : "/reclamation"},
+    {"icon": Icons.event, "title": "Evenements", "image": "assets/event.png","link" : "/listEvenements"},
   ];
+  @override
+  void initState() {
 
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text(textAlign: TextAlign.center, // Center the text horizontally
+          'Services',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),backgroundColor: const Color(0xff7FB77E),
+        iconTheme: const IconThemeData(color: Colors.white,size: 24),
+      ),
+      body: Container(
+        color: const Color(0xFFEEEEEE),
+
+        child:Column(children: [
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+            child: ListView(
               children: [
+                const SizedBox(height: 5,),
+
                 Container(
-                  height: 200,
-                  child: Stack(
+                  height: 80,
+                  padding: const EdgeInsets.all(16.0),
+                  child:SearchActualiteInServices()
+                  /*TextField(
+                    decoration: InputDecoration(
+                      hintText: 'Chercher',
+                      prefixIcon: const Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                    ),
+                  ),*/
+                ),
+                const SizedBox(height: 5,),
+                Padding(
+                  padding:  const EdgeInsets.only(right: 10.0),
+                  child:  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      PageView(
-                        controller: _pageController,
-                        onPageChanged: (int page) {
-                          setState(() {
-                            _currentPage = page;
-                          });
-                        },
-                        children: _imageUrls.map((imageUrl) {
-                          return Padding(
-                            padding: const EdgeInsets.only(
-                              top: 20.0, // Espacement depuis le haut
-                              bottom: 0.0, // Espacement depuis le bas
-                              left: 10.0, // Espacement depuis la gauche
-                              right: 10.0, // Espacement depuis la droite
+
+                      Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(context, '/listAnnoces') ;
+                            },
+                            child: const Text(
+                              'Voir tous',
+                              style: TextStyle(color: Color(0xffff0000)),
                             ),
-                            child: Image.asset(
-                              imageUrl,
-                              fit: BoxFit.cover,
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                      Positioned(
-                        bottom: 10,
-                        left: 0,
-                        right: 0,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: _buildIndicators(),
-                        ),
-                      ),
+                          ),
+                          const Icon(
+                            Icons.keyboard_double_arrow_right_sharp,
+                            color: Color(0xffff0000),
+                          )
+                        ],
+                      )
+
                     ],
                   ),
                 ),
-                SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Services',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
+
+                Container(
+
+                  // padding: const EdgeInsets.only(left: 20, right: 20),
+                  color: const Color(0xFFEEEEEE),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      //const SizedBox(height: 50),
+
+                      BlocProvider<ActualiteBloc>(
+                        create: (_) {
+                          ActualiteBloc actualiteBloc = getIt<ActualiteBloc>();
+                          if (!actualiteBloc.isClosed) {
+                            actualiteBloc.add(GetActualitesOfTodays());
+                          }
+                          return actualiteBloc;
+                        },
+                        child: Builder(
+                          builder: (context) {
+                            return BlocBuilder<ActualiteBloc, ActualiteState>(
+                              builder: (context, state) {
+                                if (state is ListActualiteSuccessOfTodaye) {
+                                  return CarouselSliderAnnonce(actualites: state.listactualities);
+                                } else if (state is ActualiteLoadingServicesState) {
+                                  return const Center(child: CircularProgressIndicator()); // Show a progress indicator
+                                }
+                                else {
+                                  // Handle other states if needed
+                                  return Container(); // Placeholder or error message
+                                }
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                      /*BlocListener<ActualiteBloc, ActualiteState>(
+                          listener: (context, state) {
+                            if (state is FilterListActualiteSuccessMessageForServicesState) {
+                              //listAnnoces
+                              Navigator.pushNamed(context, '/listAnnoces') ;
+                            }
+                          },
+                          child : Container(),
+                      ),*/
+
+                      const SizedBox(height: 15),
+                      const Text('Explorer nos services',textAlign : TextAlign.center, style: TextStyle(
+                          fontSize: 25,
+                          color: Color(0xff414141),
+                          fontWeight: FontWeight.w500
+                      ),),
+                      Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: GridView.count(
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 5.0,
+                          mainAxisSpacing: 5.0,
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          children: _services.map((service) => _buildServiceBox(service)).toList(),
+                        ),
+                      ),
+                      // const SizedBox(height: 33),
+                    ],
                   ),
                 ),
-                 Padding(
-                  padding:  EdgeInsets.all(8.0),
-                  child: Text(
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '
-                    'Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. '
-                    'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20),
-                GridView.count(
-                  crossAxisCount: 3, // Changed from 2 to 3
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  children: _services
-                      .map((service) => _buildServiceBox(service))
-                      .toList(),
-                ),
+                //const SizedBox(height: 10,),
               ],
             ),
-            flex: 10,
           ),
-          const Expanded(
-            child:  ButtonNavigationBar(),
-            flex: 1,
-          )
-        ],
-      ),
-    );
-  }
+          const Expanded(flex : 0,child:  ButtonNavigationBar())
+        ],)
 
-  List<Widget> _buildIndicators() {
-    List<Widget> indicators = [];
-    for (int i = 0; i < _imageUrls.length; i++) {
-      indicators.add(_indicator(i == _currentPage));
-    }
-    return indicators;
-  }
-
-  Widget _indicator(bool isActive) {
-    return AnimatedContainer(
-      duration: Duration(milliseconds: 150),
-      margin: EdgeInsets.symmetric(horizontal: 4.0),
-      height: 8.0,
-      width: isActive ? 24.0 : 8.0,
-      decoration: BoxDecoration(
-        color: isActive ? Colors.blue : Colors.grey,
-        borderRadius: BorderRadius.circular(12),
       ),
     );
   }
 
   Widget _buildServiceBox(Map<String, dynamic> service) {
-    return Container(
-      margin: EdgeInsets.all(8.0),
-      padding: EdgeInsets.all(8.0),
-      decoration: BoxDecoration(
-        color: Color(0xFFF2F3F5),
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            service["icon"],
-            size: 40,
-            color: Color(0xff3960CA),
-          ),
-          SizedBox(height: 10),
-          Text(
-            service["title"],
-            style: TextStyle(fontSize: 16),
-            textAlign: TextAlign.center,
-          ),
-        ],
+    return GestureDetector(
+      onTap: (){
+        Navigator.pushNamed(context, service['link']) ;
+      },
+      child: Container(
+        margin: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFFFFF),
+          borderRadius: BorderRadius.circular(8.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: const Offset(0, 1),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 35,
+              height: 35,
+              child: Image.asset(service["image"]),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              service["title"],
+              style: const TextStyle(fontSize: 13, color: Color(0xff414141)),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }
 }
+

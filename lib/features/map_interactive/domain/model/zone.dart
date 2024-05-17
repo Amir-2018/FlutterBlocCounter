@@ -3,21 +3,20 @@ import 'package:pfechotranasmartvillage/features/map_interactive/domain/model/lo
 import 'package:pfechotranasmartvillage/features/map_interactive/domain/model/point_location.dart';
 
 
+
 class Zone {
   final int? id;
   final List<PointLocation> bordures;
   final String nom;
-  final List<Establishment> etablissements;
   final int nombre_lots;
-  final List<Lot> lots;
+  //final List<Lot>? lots;
 
   const Zone({
     this.id,
     required this.bordures,
     required this.nom,
-    required this.etablissements,
     required this.nombre_lots,
-    required this.lots,
+   // this.lots,
   });
 
   factory Zone.fromJson(Map<String, dynamic> json) {
@@ -27,44 +26,51 @@ class Zone {
           .map((bordureJson) => PointLocation.fromJson(bordureJson))
           .toList(),
       nom: json['nom'],
-      etablissements: (json['etablissements'] as List<dynamic>)
-          .map((etablissementJson) => Establishment.fromJson(etablissementJson))
-          .toList(),
+
       nombre_lots: json['nombre_lots'],
-      lots: (json['lots'] as List<dynamic>)
+
+      /*lots: (json['lots'] as List<dynamic>)
           .map((lotJson) => Lot.fromJson(lotJson))
-          .toList(),
+          .toList(),*/
     );
   }
 
   factory Zone.fromMap(Map<String, dynamic> map) {
     return Zone(
       id: map['id'] != null ? map['id'] : '',
-      bordures: (map['bordures'] as List<dynamic>)
-          .whereType<Map<String, dynamic>>()
-          .map((bordureMap) => PointLocation.fromMap(bordureMap))
-          .toList(),
+
+      bordures: map['bordures'] ,
       nom: map['nom'] != null ? map['nom'] : '',
-      etablissements: (map['etablissements'] as List<dynamic>)
+      /*etablissements: (map['etablissements'] as List<dynamic>)
           .whereType<Map<String, dynamic>>()
           .map((etablissementMap) => Establishment.fromMap(etablissementMap))
-          .toList(),
+          .toList(),*/
       nombre_lots: map['nombre_lots'] != null ? map['nombre_lots'] : 0,
-      lots: (map['lots'] as List<dynamic>)
+
+      /*lots: (map['lots'] as List<dynamic>)
           .whereType<Map<String, dynamic>>()
           .map((lotMap) => Lot.fromMap(lotMap))
-          .toList(),
+          .toList(),*/
     );
   }
 
-  Map<String, dynamic> toMap() {
+   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'bordures': bordures.map((bordure) => bordure.toMap()).toList(),
       'nom': nom,
-      'etablissements': etablissements.map((etablissement) => etablissement.toMap()).toList(),
       'nombre_lots': nombre_lots,
-      'lots': lots.map((lot) => lot.toMap()).toList(),
+      /*'lots': lots?.map((lot) => lot.toMap()).toList(),*/
     };
+  }
+
+  factory Zone.empty() {
+    return const Zone(
+      id: null,
+      bordures: [],
+      nom: '',
+      nombre_lots: 0,
+    /*  lots: [],*/
+    );
   }
 }

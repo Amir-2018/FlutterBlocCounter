@@ -147,7 +147,12 @@ class _LoginState extends State<Login> {
                                       'Échec de la connexion',
                                       'Veuillez vérifier votre connexion Internet et réessayer.',
                                       Icons.error_outline,
-                                      const Color(0xFF7FB77E),
+                                      const Color(0xFFFF0000),
+                                      const Color(0xFF414141),
+                                      const Color(0xFF414141),
+                                      const Color(0xFF1F7774),null
+
+
                                       //'/login'
                                     );
                                   } else {
@@ -192,7 +197,11 @@ class _LoginState extends State<Login> {
                                       'Échec de la connexion',
                                       'Veuillez vérifier votre connexion Internet et réessayer.',
                                       Icons.error_outline,
-                                      const Color(0xFF7FB77E),
+                                      const Color(0xFFFF0000),
+                                      const Color(0xFF414141),
+                                      const Color(0xFF414141),
+                                      const Color(0xFF1F7774),null
+
                                       //'/login'
                                     );
                                   } else
@@ -219,8 +228,12 @@ class _LoginState extends State<Login> {
                                           'Données erronées',
                                           'Merci de les vérifier.',
                                           Icons.error_outline,
-                                          const Color(0xFF7FB77E),
-                                          //'/login'
+                                        const Color(0xFFFF0000),
+                                        const Color(0xFFFF0000),
+                                        const Color(0xFF414141),
+                                        const Color(0xFF1F7774),null
+
+                                        //'/login'
                                       );
                                     } else if (state is LoginSuccessState) {
                                       Navigator.pushNamed(context, '/services');

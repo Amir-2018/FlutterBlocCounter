@@ -59,13 +59,13 @@ class _ProfileInfoWidgetState extends State<ProfileInfoWidget> {
                       if (state is UserSuccessState) {
                         return Column(
                           children: [
-                            Text(
+                          /*  Text(
                               state.userObject.username,
                               style: Theme.of(context)
                                   .textTheme
                                   .headline6
                                   ?.copyWith(fontWeight: FontWeight.bold),
-                            ),
+                            ),*/
                             const SizedBox(height: 16),
                             Text(
                                 textAlign: TextAlign.center,
@@ -159,7 +159,19 @@ class _ProfileInfoWidgetState extends State<ProfileInfoWidget> {
                                         child: Text(state.userObject.password),
                                       ),
                                     ],
-                                  )
+                                  ),
+                                   const SizedBox(height: 22),
+
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+
+                                      DynamicConnexionWidget(buttonColor: Color(0xFF7FB77E), buttonContent: 'Manage Events', link: '/profileInfo', tag: 'btn1',),
+                                      const SizedBox(width: 16.0),
+                                      DynamicConnexionWidget(buttonColor: Color(0xFFA9A91C), buttonContent: 'Verify', link: '/profileInfo', tag: 'btn2',),
+
+                                    ],
+                                  ),
                                 ],
                               ),
                             ),
@@ -170,23 +182,35 @@ class _ProfileInfoWidgetState extends State<ProfileInfoWidget> {
                             style: TextStyle(
                                 color: Color.fromARGB(255, 77, 86, 78)));
                       } else {
-                        return Container();
+                        return Column(children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const SizedBox(height: 15,) ,
+                              const CircularProgressIndicator(
+                                color: Color(0xff7FB77E),
+                              ),
+                              Container(
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                child: const Text(
+                                  "En cours de chargement...",
+                                  style: TextStyle(
+                                    color: Color(0xff7FB77E),
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1.2,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+
+                        ],);
                       }
                     }),
                     //Column(chi)
 
-                    const SizedBox(height: 22),
 
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-
-                        DynamicConnexionWidget(buttonColor: Color(0xFF7FB77E), buttonContent: 'Manage Events', link: '/profileInfo', tag: 'btn1',),
-                        const SizedBox(width: 16.0),
-                        DynamicConnexionWidget(buttonColor: Color(0xFFA9A91C), buttonContent: 'Verify', link: '/profileInfo', tag: 'btn2',),
-
-                      ],
-                    ),
 
                     //const _ProfileInfoRow()
                   ],

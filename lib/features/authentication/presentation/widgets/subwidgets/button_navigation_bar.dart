@@ -13,27 +13,28 @@ class ButtonNavigationBar extends StatefulWidget {
 }
 
 class _SimpleBottomNavigationState extends State<ButtonNavigationBar> {
-  int _selectedIndex = 0;
+  static int _selectedIndex = 0;
   BottomNavigationBarType _bottomNavType = BottomNavigationBarType.fixed;
 
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-
       currentIndex: _selectedIndex,
       selectedItemColor: const Color(0xFF7FB77E),
       unselectedItemColor: const Color(0xff757575),
       type: _bottomNavType,
       onTap: (index) {
         if (index == 2) {
-          Navigator.pushNamed(context, '/profileInfo');
+          Navigator.pushNamed(context, '/settingsWidget');
         } else if (index == 1) {
           Navigator.pushNamed(context, '/map');
-
-
         } else if (index == 4) {
           showMenu(context);
+        }else if (index == 0){
+          Navigator.pushNamed(context, '/services');
+
         }
+
         setState(() {
           _selectedIndex = index;
         });
@@ -57,10 +58,14 @@ class _SimpleBottomNavigationState extends State<ButtonNavigationBar> {
               leading: const Icon(Icons.exit_to_app),
               title: const Text('Déconnexion'),
               onTap: () async {
-                bool shouldUpdate = await showValidationDialog(context, Icons.lock_outline, 'Voulez-vous vous déconnecter?');
+                bool shouldUpdate = await showValidationDialog(context, Icons.lock_outline, 'Voulez-vous vous déconnecter?',
+                  const Color(0xFFF28F8F),
+                  const Color(0xFF414141),
+                  const Color(0xFF1F7774),
+                  const Color(0xFFF28F8F),);
                 if (shouldUpdate) {
                   BlocProvider.of<UserBloc>(context).add(LogOutEvent());
-                  Navigator.pushNamed(context, '/login');
+                  Navigator.pushNamed(context, '/mode');
                 }
               },
             ),
@@ -73,18 +78,16 @@ class _SimpleBottomNavigationState extends State<ButtonNavigationBar> {
 //Icon selectedIcon = Icon(Icons.home_rounded);
 
 final _navBarItems = [
-
   const BottomNavigationBarItem(
     icon: Icon(Icons.home_outlined),
     activeIcon: Icon(Icons.home_rounded),
-    label: 'Accuiel',
+    label: 'Accueil',
   ),
-
   const BottomNavigationBarItem(
     icon: Icon(Icons.location_on_outlined),
     activeIcon: Icon(Icons.location_on_rounded),
-
     label: 'Map',
+
   ),
   const BottomNavigationBarItem(
     icon: Image(

@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
-import 'map_home_page.dart';
+import '../../../../../core/connection_management.dart';
+import 'bloc_position/map_home_page/map_home_page.dart';
 
 class SearchBarWidget extends StatefulWidget {
   final String hintText;
@@ -40,8 +41,16 @@ class SearchBarWidget extends StatefulWidget {
 }
 
 class _SearchBarState extends State<SearchBarWidget> {
+  Stream<bool> checkConnectionStream() async* {
+    while (true) {
+      yield await checkConnection();
+      await Future.delayed(Duration(seconds: 1));
+    }
+  }
   @override
   Widget build(BuildContext context) {
+    Stream<bool> connectionStream = checkConnectionStream();
+
     return Positioned(
       top: widget.marginTop,
       left: widget.marginLeft,
@@ -56,10 +65,24 @@ class _SearchBarState extends State<SearchBarWidget> {
         ),
         child: Column(
           children: [
-            TextFormField(
+          StreamBuilder<bool>(
+          stream: connectionStream,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return CircularProgressIndicator(); // Display a loading indicator while waiting for data
+            }
+
+            bool isConnectionOn = snapshot.data ?? false;
+
+            return TextFormField(
               controller: widget.searchController,
               focusNode: widget.focusNode,
               decoration: InputDecoration(
+                prefixIcon: const Icon(
+                  Icons.location_on_outlined,
+                  color: Color(0xFF7FB77E),
+                ),
+                enabled: isConnectionOn, // Disable the TextFormField if connection is off
                 hintText: widget.hintText,
                 border: InputBorder.none,
                 focusedBorder: InputBorder.none,
@@ -77,33 +100,41 @@ class _SearchBarState extends State<SearchBarWidget> {
                     }
                     var client = http.Client();
                     try {
-                      String url =
-                          '${widget.baseUri}/search?q=$value&format=json&polygon_geojson=1&addressdetails=1';
-                      if (kDebugMode) {
-                        print(url);
+                      if (isConnectionOn) {
+                        String url = '${widget.baseUri}/search?q=$value&format=json&polygon_geojson=1&addressdetails=1';
+                        if (kDebugMode) {
+                          print(url);
+                        }
+                        var response = await client.get(Uri.parse(url));
+                        var decodedResponse = jsonDecode(utf8.decode(response.bodyBytes)) as List<dynamic>;
+                        if (kDebugMode) {
+                          print(decodedResponse);
+                        }
+                        widget.options = decodedResponse
+                            .map(
+                              (e) => OSMdata(
+                            displayname: e['display_name'],
+                            lat: double.parse(e['lat']),
+                            lon: double.parse(e['lon']),
+                          ),
+                        )
+                            .toList();
+                        //widget.updateOptions(widget.options); // Call the callback to update options
+
+                        setState(() {});
+                      } else {
+                        // Handle the case when the connection is off
+                        print('Connection is off. Cannot perform search.');
                       }
-                      var response = await client.get(Uri.parse(url));
-                      var decodedResponse = jsonDecode(utf8.decode(response.bodyBytes)) as List<dynamic>;
-                      if (kDebugMode) {
-                        print(decodedResponse);
-                      }
-                      widget.options = decodedResponse
-                          .map(
-                            (e) => OSMdata(
-                          displayname: e['display_name'],
-                          lat: double.parse(e['lat']),
-                          lon: double.parse(e['lon']),
-                        ),
-                      )
-                          .toList();
-                      setState(() {});
                     } finally {
                       client.close();
                     }
                   },
                 );
               },
-            ),
+            );
+          },
+        ),
             StatefulBuilder(
               builder: (context, setState) {
                 return ListView.builder(

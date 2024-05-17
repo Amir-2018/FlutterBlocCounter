@@ -9,10 +9,10 @@ import '../../../../core/dependencies_injection.dart';
 import '../../domain/model/auth_user.dart';
 import '../../domain/model/user.dart';
 import '../../domain/repository/user_repository.dart';
-import '../datasources/local/database_helper.dart';
+import '../../../../core/database/database_helper.dart';
 
 class UserRepositoryImpl extends UserRepository {
-  // http.Client client = http.Client();
+   //http.Client client = http.Client();
 
   String accessToken = '';
   @override
@@ -32,24 +32,24 @@ class UserRepositoryImpl extends UserRepository {
           'grant_type': 'password'
         },
       );
+
       if (response.statusCode == 200) {
         final data = json.decode(response.body) as Map<String, dynamic>;
         accessToken = data['access_token'];
-        await  getIt<FlutterSecureStorage>().write(key: "access_token", value: accessToken);
+
+        await getIt<FlutterSecureStorage>().write(key: "access_token", value: accessToken);
         return true;
       } else if (response.statusCode == 404) {
         debugPrint("User not found");
         return false;
       } else if (response.statusCode == 401) {
-        debugPrint("Utilisateur n'est pas autorisé ");
+        debugPrint("Utilisateur n'est pas autorisé");
         return false;
-      }
-      else {
-        //return false ;
-         throw Exception('Failed to check user existence.');
+      } else {
+        throw Exception('Failed to check user existence.');
       }
     } catch (e) {
-        throw Exception('Failed to check user existence: $e');
+      throw Exception('Failed to check user existence: $e');
     }
   }
 

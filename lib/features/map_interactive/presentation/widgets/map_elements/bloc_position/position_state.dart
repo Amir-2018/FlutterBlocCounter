@@ -6,7 +6,9 @@ import 'package:pfechotranasmartvillage/features/map_interactive/presentation/wi
 import '../../../../domain/model/point_location.dart';
 
 @immutable
-abstract class PositionState {}
+abstract class PositionState {
+
+}
 
 class PositionInitialState extends PositionState {}
 

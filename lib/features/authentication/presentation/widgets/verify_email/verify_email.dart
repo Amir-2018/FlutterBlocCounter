@@ -142,7 +142,11 @@ class _VerifyEmailState extends State<Login> {
                                   'Échec de la connexion',
                                   'Veuillez vérifier votre connexion Internet et réessayer.',
                                   Icons.error_outline,
-                                    const Color(0xff7FB77E),
+                                  const Color(0xFFFC5A5A),
+                                  const Color(0xFFF28F8F),
+                                  const Color(0xFF7FB77E),
+                                  const Color(0xFF7FB77E),null
+
                                   //'/login'
                                 );                              }else{
                                 Navigator.pushNamed(context, '/changePassword');

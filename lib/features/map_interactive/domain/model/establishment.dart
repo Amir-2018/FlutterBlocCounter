@@ -8,17 +8,16 @@ import 'contact.dart'; // Ajout de l'import manquant
 import 'package:latlong2/latlong.dart';
 
 class Establishment {
-  final int? id;
-  final String nom;
-  final List<Lot> lots;
-  final String telephone;
-  final String fax;
-  //final List<Contact> contacts;
-  final String categorie;
-  final String etablissementEnum;
-  final double surface;
-  final String lien;
-  final PointLocation position;
+  final int? id;//
+  final String nom;//
+  final List<Lot> lots;//
+  final String telephone;//
+  final String fax;//
+  final List<Contact> contacts;
+  final String categorie;//
+  final String surface;//
+  final String lien;//
+  final PointLocation position;//
 
   const Establishment({
     this.id,
@@ -26,25 +25,24 @@ class Establishment {
     required this.lots,
     required this.telephone,
     required this.fax,
-    //required this.contacts,
+    required this.contacts,
     required this.categorie,
-    required this.etablissementEnum,
     required this.surface,
     required this.lien,
     required this.position,
   });
 
   factory Establishment.fromJson(Map<String, dynamic> json) {
+
     return Establishment(
       id: json['id'],
       nom: json['nom'],
       telephone: json['telephone'],
       fax: json['fax'],
-      /*contacts: (json['contacts'] as List<dynamic>)
+      contacts: (json['contacts'] as List<dynamic>)
           .map((contact) => Contact.fromJson(contact))
-          .toList(),*/
-      etablissementEnum: json['etablissementEnum'],
-      surface: json['surface'].toDouble(),
+          .toList(),
+      surface: json['surface'],
       lien: json['lien'],
       position: PointLocation(
         lat: json['position']['lat'],
@@ -63,22 +61,20 @@ class Establishment {
       nom: map['nom'],
       telephone: map['telephone'],
       fax: map['fax'],
-     /* contacts: (map['contacts'] as List<dynamic>)
+      contacts: (map['contacts'] as List<dynamic>)
           .map((contact) => Contact.fromMap(contact))
-          .toList(),*/
-      etablissementEnum: map['etablissementEnum'],
-      surface: map['surface'].toDouble(),
+          .toList(),
+      surface: map['surface'],
       lien: map['lien'],
-      position: PointLocation(
-        lat: map['position']['lat'],
-        lng: map['position']['lng'],
-      ),
+      position: PointLocation.fromMap(map['position']),
       lots: (map['lots'] as List<dynamic>)
           .map((lot) => Lot.fromMap(lot))
           .toList(),
       categorie: map['categorie'],
     );
   }
+
+
 
   Map<String, dynamic> toMap() {
     return {
@@ -87,15 +83,30 @@ class Establishment {
       'telephone': telephone,
       'fax': fax,
       //'contacts': contacts.map((contact) => contact.toMap()).toList(),
-      'etablissementEnum': etablissementEnum,
       'surface': surface,
       'lien': lien,
+      'categorie': categorie,
       'position': {
         'lat': position.lat,
         'lng': position.lng,
       },
-      'lots': lots.map((lot) => lot.toMap()).toList(),
+      //'lots': lots.map((lot) => lot.toMap()).toList(),
     };
+  }
+
+  factory Establishment.empty() {
+    return Establishment(
+      id: null,
+      nom: '',
+      lots: [],
+      telephone: '',
+      fax: '',
+      contacts: [],
+      categorie: '',
+      surface: '',
+      lien: '',
+      position: PointLocation(lat: 0.0, lng: 0.0),
+    );
   }
 }
 

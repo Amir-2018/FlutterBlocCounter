@@ -13,7 +13,7 @@ import 'package:pfechotranasmartvillage/features/map_interactive/presentation/wi
 import 'package:pfechotranasmartvillage/features/map_interactive/presentation/widgets/map_elements/search_position_line.dart';
 import 'bloc_position/position_event.dart';
 import 'custom_test_field.dart';
-import 'map_home_page.dart';
+import 'bloc_position/map_home_page/map_home_page.dart';
 import 'options_list_view.dart';
 import 'package:pfechotranasmartvillage/features/map_interactive/domain/model/point_location.dart';
 
@@ -127,7 +127,7 @@ class _GoToDesiredPositionState extends State<GoToDesiredPosition> {
               // SearchBarWidget
 
                   Expanded(
-                    child: Column(
+                    child: ListView(
                       children: [
                         BlocListener<PositionBloc, PositionState>(
                           listener: (context, state) {
@@ -230,31 +230,35 @@ class _GoToDesiredPositionState extends State<GoToDesiredPosition> {
             if (_activeFocusNode == _focusNode1 && _searchController.text.isNotEmpty)
               Expanded(
                 flex: 4,
-                child: Container(
-                  child: _options1.isEmpty
-                      ? const Center(
-                    child: Column(
-                      children: [
-                        CircularProgressIndicator.adaptive(
-                          strokeWidth: 4.0,//
-                          backgroundColor: Color(0xff7FB77E),
-                          valueColor: AlwaysStoppedAnimation<Color>(Color(0xff5d805e)),
-                        ),
-                        SizedBox(height: 20,),
-                        Text('En cours de chargement...',
-                        style: TextStyle(
-                          color: Color(0xff414141),
-                          fontSize: 18
-                        ),
-                        ),
-                      ],
-                    )
-                  )
-                      : OptionsListView(
-                    options: _options1,
-                    mapController: _mapController,
-                    focusNode: _focusNode1,
-                  ),
+                child: ListView(
+                  children: [
+                    Container(
+                      child: _options1.isEmpty
+                          ? const Center(
+                        child: Column(
+                          children: [
+                            CircularProgressIndicator.adaptive(
+                              strokeWidth: 4.0,//
+                              backgroundColor: Color(0xff7FB77E),
+                              valueColor: AlwaysStoppedAnimation<Color>(Color(0xff5d805e)),
+                            ),
+                            SizedBox(height: 20,),
+                            Text('En cours de chargement...',
+                            style: TextStyle(
+                              color: Color(0xff414141),
+                              fontSize: 18
+                            ),
+                            ),
+                          ],
+                        )
+                      )
+                          : OptionsListView(
+                        options: _options1,
+                        mapController: _mapController,
+                        focusNode: _focusNode1,
+                      ),
+                    ),
+                  ],
                 ),
               )
             else if (_activeFocusNode == _focusNode2 && _searchController2.text.isNotEmpty)

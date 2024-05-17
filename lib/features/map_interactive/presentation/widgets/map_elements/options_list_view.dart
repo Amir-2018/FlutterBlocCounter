@@ -7,7 +7,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../../../domain/model/point_location.dart';
 import 'bloc_position/position_state.dart';
-import 'map_home_page.dart';
+import 'bloc_position/map_home_page/map_home_page.dart';
 
 class OptionsListView extends StatefulWidget {
   final List<OSMdata> options;

@@ -3,7 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 
-import 'map_elements/map_home_page.dart';
+import 'map_elements/bloc_position/map_home_page/map_home_page.dart';
 import 'map_elements/markers.dart';
 
 class MapWidget extends StatefulWidget {

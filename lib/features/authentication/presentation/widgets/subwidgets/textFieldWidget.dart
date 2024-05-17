@@ -36,7 +36,7 @@ class TextFieldWidget extends StatelessWidget {
           color: Color(0xFF414141),
           fontWeight: FontWeight.bold,
         ),
-        keyboardType: TextInputType.emailAddress,
+        keyboardType: keyboardtype,
         controller: controller,
         obscureText: isTextObscure,
         validator: validator,

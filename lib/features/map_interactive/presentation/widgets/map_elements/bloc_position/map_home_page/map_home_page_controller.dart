@@ -1,31 +1,24 @@
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
-import '../../../domain/model/establishment.dart';
-import 'bloc_position/position_bloc.dart';
-import 'bloc_position/position_event.dart';
+import '../../../../../domain/model/establishment.dart';
+import '../../../../../domain/model/lot.dart';
+import '../position_bloc.dart';
+import '../position_event.dart';
 import 'package:pfechotranasmartvillage/features/map_interactive/domain/model/point_location.dart';
 
-import 'go_to_selected_position.dart';
+import '../../go_to_selected_position.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-List<PointLocation> polylines = [
-  const PointLocation(lat: 36.8978188, lng: 10.1868324),
-  const PointLocation(lat: 36.8988555, lng: 10.1871929),
-  const PointLocation(lat: 36.8998611, lng: 10.1878452),
-  const PointLocation(lat: 36.9018309, lng: 10.1890168),
-  const PointLocation(lat: 36.9057404, lng: 10.1914930),
-  const PointLocation(lat: 36.9039220, lng: 10.1938319),
-  const PointLocation(lat: 36.9035983, lng: 10.1938663),
-  const PointLocation(lat: 36.9032873, lng: 10.1939821),
-  const PointLocation(lat: 36.9017520, lng: 10.1963983),
-  const PointLocation(lat: 36.9001734, lng: 10.1986084),
-  const PointLocation(lat: 36.8952280, lng: 10.1935616),
-  const PointLocation(lat: 36.8967064, lng: 10.1916969),
-  const PointLocation(lat: 36.8978046, lng: 10.1868260),
-];
+import 'map_home_page.dart';
+
+
+
 
 
 Polygon drawPolygon(List<LatLng> borders, double strokeWidthZone, bool isFilledState) {
@@ -36,6 +29,69 @@ Polygon drawPolygon(List<LatLng> borders, double strokeWidthZone, bool isFilledS
     borderStrokeWidth: strokeWidthZone,
     isFilled: isFilledState,
   );
+}
+Polygon drawPolygonForLots(List<LatLng> borders, double strokeWidthZone, bool isFilledState, bool etat,String namedLabel,int numTestingVisibility) {
+  return Polygon(
+    points: borders,
+    color: etat ?Colors.green.withOpacity(0.3)  : Colors.red.withOpacity(0.3),
+    borderColor: Colors.black,
+    borderStrokeWidth: strokeWidthZone,
+    isFilled: isFilledState,
+    label: namedLabel,
+    labelStyle: numTestingVisibility % 2 != 0
+        ? TextStyle(fontSize: 14, color: Colors.black, fontWeight: FontWeight.bold)
+        : TextStyle(fontSize: 14, color: Colors.transparent, fontWeight: FontWeight.bold),
+  );
+}
+
+
+  // Show the dropdown menu
+
+
+
+void smoothZoomIn(MapController mapController) {
+  double targetZoom = mapController.zoom + 1;
+  double currentZoom = mapController.zoom;
+  double zoomStep = 0.1; // Adjust the step for smoother or faster zooming
+
+  Timer.periodic(Duration(milliseconds: 16), (timer) {
+    if (currentZoom < targetZoom) {
+      currentZoom += zoomStep;
+      mapController.move(mapController.center, currentZoom);
+    } else {
+      timer.cancel();
+    }
+  });
+}
+
+void smoothZoomOut(MapController mapController) {
+  double targetZoom = mapController.zoom - 1;
+  double currentZoom = mapController.zoom;
+  double zoomStep = 0.1; // Adjust the step for smoother or faster zooming
+
+  Timer.periodic(Duration(milliseconds: 16), (timer) {
+    if (currentZoom > targetZoom) {
+      currentZoom -= zoomStep;
+      mapController.move(mapController.center, currentZoom);
+    } else {
+      timer.cancel();
+    }
+  });
+}
+
+void foncusOntarget(MapController mapController, LatLng targetPosition) {
+  double targetZoom = 17;
+  double currentZoom = mapController.zoom;
+  double zoomStep = 0.1; // Adjust the step for smoother or faster zooming
+
+  Timer.periodic(Duration(milliseconds: 16), (timer) {
+    if (currentZoom < targetZoom) {
+      currentZoom += zoomStep;
+      mapController.move(targetPosition, currentZoom);
+    } else {
+      timer.cancel();
+    }
+  });
 }
 
 void showEstablishmentDialog(BuildContext context, Establishment establishment) {
@@ -77,6 +133,21 @@ void showEstablishmentDialog(BuildContext context, Establishment establishment) 
               leading: Icon(Icons.square_foot),
               title: Text('Surface: ${establishment.surface}'),
             ),
+            InkWell(
+              onTap: () {
+                // Use the url_launcher package to open the link
+                launchUrl(Uri.parse(establishment.lien));
+                Navigator.of(context).pop();
+              },
+              child: ListTile(
+                leading: Icon(Icons.link),
+                title: Text('${establishment.nom}',style: TextStyle(
+                  color: Colors.blue,
+                  fontWeight: FontWeight.bold
+                ),),
+              ),
+            ),
+
             // Add more information as needed
             SizedBox(height: 20.0),
             Row(
@@ -101,17 +172,21 @@ void showEstablishmentDialog(BuildContext context, Establishment establishment) 
                 ),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () async {
+                    onPressed: ()  async {
                       final currentLocation = await getCurrentLocation();
                       final currentLocationArea = currentLocation;
                       final establishmentLocation = establishment.position;
 
                       final desiredLocationArea = establishmentLocation;
 
-                      BlocProvider.of<PositionBloc>(context).add(
-                        SendLocationsEvent(location1: currentLocationArea, location2: desiredLocationArea),
-                      );
                       Navigator.of(context).pop();
+                      BlocProvider.of<PositionBloc>(context).add(
+                        // current Location
+                        SendLocationsEvent(location1: PointLocation(lat : 36.897295, lng : 10.194307), location2: desiredLocationArea),
+                          );
+                        foncusOntarget( OpenStreetMapSearchAndPickState.mapController,const LatLng(36.897295,10.194307, )) ;
+
+
                     },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(const Color(0xFF7FB77E)),
@@ -154,6 +229,45 @@ Widget buildLocationWidget(IconData locationPinIcon) {
                 locationPinIcon,
                 size: 50,
                 color: Colors.red,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+Widget buildLocationPin(IconData currentLocationIcon,bool currrent_location_visibility) {
+  return Positioned.fill(
+    child: IgnorePointer(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(bottom: 50),
+              child: Visibility(
+                visible: currrent_location_visibility,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Icon(
+                    currentLocationIcon,
+                    size: 40,
+                    color: Colors.blue,
+                  ),
+                ),
               ),
             ),
           ],

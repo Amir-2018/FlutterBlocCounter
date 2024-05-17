@@ -8,6 +8,7 @@ import '../domain/usecases/get_user_info_usecase.dart';
 import '../domain/usecases/logout_usecase.dart';
 class UserBloc extends Bloc<UserEvent, UserState> {
 
+
   GestUserInfoUseCase getUserUserUseCase;
   LogOutUseCase logOutUseCase ;
 
@@ -53,5 +54,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
     });
 
+  }
+  @override
+  Future<void> close() async {
+    // Do not call super.close() to prevent the Bloc from being closed
+    // await super.close();
   }
 }
